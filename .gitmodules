@@ -1,0 +1,3 @@
+[submodule "pigeonhole_frontend"]
+	path = pigeonhole_frontend
+	url = https://github.com/Le-QuKhai/pigeonhole_frontend.git
