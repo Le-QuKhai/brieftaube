@@ -21,7 +21,7 @@ This Web-application project is to teach us agile software engineering processes
   ## Backend: 
     - Java
     - Spring
-    - SQL
+    - SQLite
   ## Frontend
     - HTML, CSS
     - Angular Typescrypt
