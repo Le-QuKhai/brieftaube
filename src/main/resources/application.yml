@@ -1,0 +1,33 @@
+logging:
+  level:
+    org.springframework: WARN
+---
+spring:
+  jpa:
+    database: H2
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        show_sql: false
+        use_sql_comments: true
+  datasource:
+    url: jdbc:h2:mem:testdb
+    driverClassName: org.h2.Driver
+    username: sa
+    password:
+  h2:
+    console:
+      enabled: true
+  mail:
+    host: fakehost
+    port: 587
+    username: fake
+    password: fake
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
