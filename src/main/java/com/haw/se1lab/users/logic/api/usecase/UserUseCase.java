@@ -1,8 +1,8 @@
 package com.haw.se1lab.users.logic.api.usecase;
 
-import com.haw.se1lab.users.dataaccess.api.entity.Professor;
+import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
 
 public interface UserUseCase {
 
-    public Professor createProfessor(Professor professor);
+    public Benutzer createUser(Benutzer user);
 }

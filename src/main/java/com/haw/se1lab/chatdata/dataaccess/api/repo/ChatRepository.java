@@ -1,10 +1,8 @@
 package com.haw.se1lab.chatdata.dataaccess.api.repo;
 
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Chat;
-import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.NoRepositoryBean;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;

@@ -4,7 +4,7 @@ import com.haw.se1lab.chatdata.common.api.exception.ParticipantAlreadyExistsExce
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Chat;
 import com.haw.se1lab.chatdata.facade.api.ChatFacade;
 import com.haw.se1lab.chatdata.logic.api.usecase.ChatUseCase;
-import com.haw.se1lab.users.dataaccess.api.entity.AbstractBenutzer;
+import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,7 @@ public class ChatFacadeImpl implements ChatFacade {
     private final Log log = LogFactory.getLog(getClass());
 
     @Override
-    public void addParticipant(Chat chat, AbstractBenutzer teilnehmer) throws ParticipantAlreadyExistsException
+    public void addParticipant(Chat chat, Benutzer teilnehmer) throws ParticipantAlreadyExistsException
     {
         log.info("Starte addParticipant");
 

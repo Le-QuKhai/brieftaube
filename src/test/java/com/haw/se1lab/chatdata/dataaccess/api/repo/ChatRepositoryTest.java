@@ -2,8 +2,6 @@ package com.haw.se1lab.chatdata.dataaccess.api.repo;
 
 import com.haw.se1lab.Application;
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Chat;
-import com.haw.se1lab.users.dataaccess.api.entity.Professor;
-import com.haw.se1lab.users.dataaccess.api.repo.ProfessorRepository;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;

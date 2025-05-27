@@ -3,7 +3,7 @@ package com.haw.se1lab.chatdata.facade.api;
 
 import com.haw.se1lab.chatdata.common.api.exception.ParticipantAlreadyExistsException;
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Chat;
-import com.haw.se1lab.users.dataaccess.api.entity.AbstractBenutzer;
+import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +20,7 @@ public interface ChatFacade
      * @throws ParticipantAlreadyExistsException wenn der Benutzer schon im Chat existiert.
      */
     @PostMapping("/add")
-   void addParticipant(@RequestBody Chat chat, @RequestBody AbstractBenutzer teilnehmer) throws ParticipantAlreadyExistsException;
+   void addParticipant(@RequestBody Chat chat, @RequestBody Benutzer teilnehmer) throws ParticipantAlreadyExistsException;
 
     @PostMapping()
     void createChat(@RequestBody Chat chat);

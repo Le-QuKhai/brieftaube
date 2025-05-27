@@ -2,10 +2,9 @@ package com.haw.se1lab.chatdata.dataaccess.api.entity;
 
 import com.haw.se1lab.chatdata.common.api.datatype.Nachricht;
 import com.haw.se1lab.general.dataaccess.api.entity.AbstractEntity;
-import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
 import jakarta.persistence.*;
 import lombok.Getter;
-import com.haw.se1lab.users.dataaccess.api.entity.AbstractBenutzer;
+import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
 import lombok.NoArgsConstructor;
 
 import java.util.*;

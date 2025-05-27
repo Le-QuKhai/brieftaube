@@ -2,7 +2,7 @@ package com.haw.se1lab.groupdata.dataaccess.api.entity;
 
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Chat;
 import com.haw.se1lab.general.dataaccess.api.entity.AbstractEntity;
-import com.haw.se1lab.users.dataaccess.api.entity.Professor;
+import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.ManyToOne;
@@ -24,17 +24,17 @@ public class Gruppe extends AbstractEntity
     @Setter
     private String beschreibung;
     @ManyToOne(fetch = FetchType.LAZY)
-    private Professor ersteller;
+    private Benutzer admin;
     @NotNull
     @Valid
     @OneToOne(fetch = FetchType.LAZY)
     private Chat gruppenChat;
 
-    public Gruppe(String name, String beschreibung, Professor ersteller, Chat gruppenChat)
+    public Gruppe(String name, String beschreibung, Benutzer admin, Chat gruppenChat)
     {
         this.name = name;
         this.beschreibung = beschreibung;
-        this.ersteller = ersteller;
+        this.admin = admin;
         this.gruppenChat = gruppenChat;
     }
 
