@@ -51,7 +51,7 @@ public class GroupFacadeTest
     @BeforeAll
     public void setUpAll()
     {
-        admin = new Benutzer("name", "test");
+        admin = new Benutzer();
         benutzerRepository.save(admin);
         chat = new Chat(admin);
         chatRepository.save(chat);

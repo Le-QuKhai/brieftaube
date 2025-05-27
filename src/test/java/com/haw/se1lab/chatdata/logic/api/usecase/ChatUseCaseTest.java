@@ -41,10 +41,10 @@ public class ChatUseCaseTest
     @BeforeAll
     public void setUpAll()
     {
-        admin = new Benutzer("test", "test");
+        admin = new Benutzer();
         benutzerRepository.save(admin);
 
-        admin2 = new Benutzer("test2", "test2");
+        admin2 = new Benutzer();
         benutzerRepository.save(admin2);
 
         chat = new Chat(admin);
