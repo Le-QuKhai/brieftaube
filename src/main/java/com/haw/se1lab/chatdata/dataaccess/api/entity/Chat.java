@@ -1,6 +1,5 @@
 package com.haw.se1lab.chatdata.dataaccess.api.entity;
 
-import com.haw.se1lab.chatdata.common.api.datatype.Nachricht;
 import com.haw.se1lab.general.dataaccess.api.entity.AbstractEntity;
 import jakarta.persistence.*;
 import lombok.Getter;
