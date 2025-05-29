@@ -3,8 +3,8 @@ package com.haw.se1lab.chatdata.logic.api.usecase;
 import com.haw.se1lab.Application;
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Chat;
 import com.haw.se1lab.chatdata.dataaccess.api.repo.ChatRepository;
-import com.haw.se1lab.users.dataaccess.api.entity.Professor;
-import com.haw.se1lab.users.dataaccess.api.repo.ProfessorRepository;
+import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
+import com.haw.se1lab.users.dataaccess.api.repo.BenutzerRepository;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -30,25 +30,25 @@ public class ChatUseCaseTest
     private ChatRepository chatRepository;
 
     @Autowired
-    private ProfessorRepository professorRepository;
+    private BenutzerRepository benutzerRepository;
 
     private Chat chat;
 
-    private Professor professor;
+    private Benutzer admin;
 
-    private Professor professor2;
+    private Benutzer admin2;
 
     @BeforeAll
     public void setUpAll()
     {
-        professor = new Professor("test", "test");
-        professorRepository.save(professor);
+        admin = new Benutzer();
+        benutzerRepository.save(admin);
 
-        professor2 = new Professor("test2", "test2");
-        professorRepository.save(professor2);
+        admin2 = new Benutzer();
+        benutzerRepository.save(admin2);
 
-        chat = new Chat(professor);
-        chat.addTeilnehmer(professor);
+        chat = new Chat(admin);
+        chat.addTeilnehmer(admin);
         chatRepository.save(chat);
     }
 
@@ -56,14 +56,14 @@ public class ChatUseCaseTest
     public void tearDownAll()
     {
         chatRepository.deleteAll();
-        professorRepository.deleteAll();
+        benutzerRepository.deleteAll();
     }
 
     @Test
     public void addParticipant_Success()
     {
-        chatUseCase.addParticipant(chat, professor2);
-        assertTrue(chatRepository.findParticipantInChat(chat.getId(), professor2.getId()).isPresent());
+        chatUseCase.addParticipant(chat, admin2);
+        assertTrue(chatRepository.findParticipantInChat(chat.getId(), admin2.getId()).isPresent());
     }
 
     @Test

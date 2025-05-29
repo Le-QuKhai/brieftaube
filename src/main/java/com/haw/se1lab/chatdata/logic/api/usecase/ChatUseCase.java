@@ -1,7 +1,7 @@
 package com.haw.se1lab.chatdata.logic.api.usecase;
 
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Chat;
-import com.haw.se1lab.users.dataaccess.api.entity.AbstractBenutzer;
+import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
 
 public interface ChatUseCase {
 
@@ -13,7 +13,7 @@ public interface ChatUseCase {
      * @param teilnehmer der Benutzer der hinzugefügt werden soll
      * @return der hinzugefügt Benutzer
      */
-    public void addParticipant(Chat chat, AbstractBenutzer teilnehmer);
+    public void addParticipant(Chat chat, Benutzer teilnehmer);
 
     /**
      * Überprüft ob der Benutzer im Chat ein Teilnehmer ist
@@ -21,6 +21,6 @@ public interface ChatUseCase {
      * @param teilnehmer der Benutzer
      * @return true, wenn der Benutzer im Chat drinnen ist, false wenn nicht
      */
-    public boolean checkIfParticipantExists(Chat chat, AbstractBenutzer teilnehmer);
+    public boolean checkIfParticipantExists(Chat chat, Benutzer teilnehmer);
 
 }

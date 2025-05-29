@@ -5,8 +5,8 @@ import com.haw.se1lab.chatdata.dataaccess.api.entity.Chat;
 import com.haw.se1lab.chatdata.dataaccess.api.repo.ChatRepository;
 import com.haw.se1lab.groupdata.dataaccess.api.entity.Gruppe;
 import com.haw.se1lab.groupdata.dataaccess.api.repo.GruppeRepository;
-import com.haw.se1lab.users.dataaccess.api.entity.Professor;
-import com.haw.se1lab.users.dataaccess.api.repo.ProfessorRepository;
+import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
+import com.haw.se1lab.users.dataaccess.api.repo.BenutzerRepository;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -37,12 +37,12 @@ public class GroupFacadeTest
     ChatRepository chatRepository;
 
     @Autowired
-    ProfessorRepository professorRepository;
+    BenutzerRepository benutzerRepository;
 
     @Autowired
     GruppeRepository ruppeRepository;
 
-    Professor professor;
+    Benutzer admin;
     Chat chat;
     @Autowired
     private GruppeRepository gruppeRepository;
@@ -51,9 +51,9 @@ public class GroupFacadeTest
     @BeforeAll
     public void setUpAll()
     {
-        professor = new Professor("name", "test");
-        professorRepository.save(professor);
-        chat = new Chat(professor);
+        admin = new Benutzer();
+        benutzerRepository.save(admin);
+        chat = new Chat(admin);
         chatRepository.save(chat);
 
     }
@@ -62,14 +62,14 @@ public class GroupFacadeTest
     {
         gruppeRepository.deleteAll();
         chatRepository.deleteAll();
-        professorRepository.deleteAll();
+        benutzerRepository.deleteAll();
 
     }
 
     @Test
     public void createGroup_Success()
     {
-        Gruppe gruppe = new Gruppe("name", "de", professor, chat);
+        Gruppe gruppe = new Gruppe("name", "de", admin, chat);
 
         Response response = given()
         .contentType(ContentType.JSON)
@@ -85,7 +85,7 @@ public class GroupFacadeTest
         .extract().response();
 
         Gruppe returnedGruppe = response.as(Gruppe.class);
-        assertEquals(returnedGruppe.getErsteller().getId(), gruppe.getErsteller().getId());
+        assertEquals(returnedGruppe.getAdmin().getId(), gruppe.getAdmin().getId());
         assertEquals(returnedGruppe.getGruppenChat().getId(), gruppe.getGruppenChat().getId());
 
     }

@@ -1,6 +1,6 @@
 package com.haw.se1lab.users.facade.api;
 
-import com.haw.se1lab.users.dataaccess.api.entity.Professor;
+import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,5 +12,5 @@ public interface UserFacade {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED) // defines the HTTP status of the returned HTTP response
-    public void createProfessor(@RequestBody Professor professor);
+    public void createBenutzer(@RequestBody Benutzer professor);
 }

@@ -2,8 +2,8 @@ package com.haw.se1lab.chatdata.dataaccess.api.repo;
 
 import com.haw.se1lab.Application;
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Chat;
-import com.haw.se1lab.users.dataaccess.api.entity.Professor;
-import com.haw.se1lab.users.dataaccess.api.repo.ProfessorRepository;
+import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
+import com.haw.se1lab.users.dataaccess.api.repo.BenutzerRepository;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -27,25 +27,25 @@ public class ChatRepositoryTest
     private ChatRepository chatRepository;
 
     @Autowired
-    private ProfessorRepository professorRepository;
+    private BenutzerRepository professorRepository;
 
     private Chat chat;
 
-    private Professor professor;
+    private Benutzer admin;
 
-    private Professor professor2;
+    private Benutzer admin2;
 
     @BeforeAll
     public void setUpAll()
     {
-        professor = new Professor("test", "test");
-        professorRepository.save(professor);
+        admin = new Benutzer();
+        professorRepository.save(admin);
 
-        professor2 = new Professor("test2", "test2");
-        professorRepository.save(professor2);
+        admin2 = new Benutzer();
+        professorRepository.save(admin2);
 
-        chat = new Chat(professor);
-        chat.addTeilnehmer(professor2);
+        chat = new Chat(admin);
+        chat.addTeilnehmer(admin2);
         chatRepository.save(chat);
     }
 
@@ -59,7 +59,7 @@ public class ChatRepositoryTest
     @Test
     public void findParticipantInChat_Success()
     {
-        assertTrue(chatRepository.findParticipantInChat(chat.getId(), professor.getId()).isPresent());
+        assertTrue(chatRepository.findParticipantInChat(chat.getId(), admin.getId()).isPresent());
     }
 
     @Test
