@@ -22,7 +22,7 @@ public class Benutzer extends AbstractEntity
     private String password;
     private Timestamp letzerLogin;
 
-    public Benutzer(String benutzerName, String password, Timestamp letzerLogin) {
+    public Benutzer(String benutzerName, String password) {
         this.benutzerName = benutzerName;
         this.password = password;
         this.letzerLogin = letzerLogin;

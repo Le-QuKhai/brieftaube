@@ -1,5 +1,7 @@
 package com.haw.se1lab.users.facade.impl;
 
+import com.haw.se1lab.users.common.api.datatype.RegestrierungsFormular;
+import com.haw.se1lab.users.common.api.exception.RegestrierungsFormularException;
 import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
 import com.haw.se1lab.users.facade.api.UserFacade;
 import com.haw.se1lab.users.logic.api.usecase.UserUseCase;
@@ -12,11 +14,14 @@ public class UserFacadeImpl implements UserFacade {
     @Autowired
     private UserUseCase userUseCase;
 
-    public ResponseEntity<?> createBenutzer(Benutzer user){
+    public ResponseEntity<?> createBenutzer(RegestrierungsFormular formular){
         try {
-            Benutzer benutzer = userUseCase.createUser(user);
+            Benutzer benutzer = userUseCase.createUser(formular);
             return ResponseEntity.ok(benutzer);
         } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+        catch(RegestrierungsFormularException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

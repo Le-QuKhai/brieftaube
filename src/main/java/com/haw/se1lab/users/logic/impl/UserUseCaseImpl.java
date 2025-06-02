@@ -1,5 +1,7 @@
 package com.haw.se1lab.users.logic.impl;
 
+import com.haw.se1lab.users.common.api.datatype.RegestrierungsFormular;
+import com.haw.se1lab.users.common.api.exception.RegestrierungsFormularException;
 import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
 import com.haw.se1lab.users.dataaccess.api.repo.BenutzerRepository;
 import com.haw.se1lab.users.logic.api.usecase.UserUseCase;
@@ -14,10 +16,18 @@ public class UserUseCaseImpl implements UserUseCase {
     private BenutzerRepository benutzerRepository;
 
     @Override
-    public Benutzer createUser(Benutzer user) {
+    public Benutzer createUser(RegestrierungsFormular formular) throws RegestrierungsFormularException {
         // check preconditions
-        Assert.notNull(user, "Parameter 'customer' must not be null!");
-        Assert.isNull(user.getId(), "Parameter 'customer' must not already have an ID!");
+        Assert.notNull(formular, "Parameter 'customer' must not be null!");
+
+        if(!formular.getPasswort().equals(formular.getPassword2())){
+            throw new RegestrierungsFormularException("");
+        }
+        else if(benutzerRepository.existBybenutzername(formular.getBenutzername())) {
+            throw new RegestrierungsFormularException("Benutzername exestiert schon");
+        }
+
+        Benutzer user = new Benutzer(formular.getBenutzername(), formular.getPasswort());
 
         // store entity in DB (from then on: entity object is observed by Hibernate within current transaction)
         return benutzerRepository.save(user);
