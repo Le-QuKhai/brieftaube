@@ -1,25 +1,22 @@
 logging:
   level:
     org.springframework: WARN
----
+
 spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/chatdb?createDatabaseIfNotExist=true&serverTimezone=UTC
+    username: testuser
+    password: testpass
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
   jpa:
-    database: H2
-    generate-ddl: true
     hibernate:
       ddl-auto: create
+    show-sql: true
     properties:
       hibernate:
-        show_sql: false
-        use_sql_comments: true
-  datasource:
-    url: jdbc:h2:mem:testdb
-    driverClassName: org.h2.Driver
-    username: sa
-    password:
-  h2:
-    console:
-      enabled: true
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
   mail:
     host: fakehost
     port: 587

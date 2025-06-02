@@ -17,13 +17,13 @@ import java.security.Timestamp;
 @AllArgsConstructor
 public class Benutzer extends AbstractEntity
 {
-    private String benutzerName;
+    private String benutzername;
     private EmailAdresse emailAdresse;
     private String password;
     private Timestamp letzerLogin;
 
-    public Benutzer(String benutzerName, String password) {
-        this.benutzerName = benutzerName;
+    public Benutzer(String benutzername, String password) {
+        this.benutzername = benutzername;
         this.password = password;
         this.letzerLogin = letzerLogin;
     }
