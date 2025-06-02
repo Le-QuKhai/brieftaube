@@ -19,5 +19,12 @@ public class Benutzer extends AbstractEntity
 {
     private String benutzerName;
     private EmailAdresse emailAdresse;
+    private String password;
     private Timestamp letzerLogin;
+
+    public Benutzer(String benutzerName, String password, Timestamp letzerLogin) {
+        this.benutzerName = benutzerName;
+        this.password = password;
+        this.letzerLogin = letzerLogin;
+    }
 }
