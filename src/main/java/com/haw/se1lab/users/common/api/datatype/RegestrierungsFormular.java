@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RegestrierungsFormular {
 
-    private String benutzername;
+    private String benutzerName;
     private String password;
     private String passwordConfirm;
 }
