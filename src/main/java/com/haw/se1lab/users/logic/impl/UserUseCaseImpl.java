@@ -23,7 +23,7 @@ public class UserUseCaseImpl implements UserUseCase {
         if(!formular.getPasswort().equals(formular.getPassword2())){
             throw new RegestrierungsFormularException("");
         }
-        else if(benutzerRepository.existBybenutzername(formular.getBenutzername())) {
+        else if(benutzerRepository.existsByBenutzerName(formular.getBenutzername())) {
             throw new RegestrierungsFormularException("Benutzername exestiert schon");
         }
 
