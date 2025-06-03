@@ -20,14 +20,14 @@ public class UserUseCaseImpl implements UserUseCase {
         // check preconditions
         Assert.notNull(formular, "Parameter 'formular' must not be null!");
 
-        if(!formular.getPasswort().equals(formular.getPassword2())){
+        if(!formular.getPassword().equals(formular.getPasswordConfirm())){
             throw new RegestrierungsFormularException("Passwörter stimmen nicht überein.");
         }
         else if(benutzerRepository.existsByBenutzerName(formular.getBenutzername())) {
             throw new RegestrierungsFormularException("Benutzername existiert schon.");
         }
 
-        Benutzer user = new Benutzer(formular.getBenutzername(), formular.getPasswort());
+        Benutzer user = new Benutzer(formular.getBenutzername(), formular.getPassword());
 
         // store entity in DB (from then on: entity object is observed by Hibernate within current transaction)
         return benutzerRepository.save(user);
