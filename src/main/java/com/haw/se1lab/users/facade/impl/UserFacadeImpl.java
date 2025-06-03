@@ -18,10 +18,7 @@ public class UserFacadeImpl implements UserFacade {
         try {
             Benutzer benutzer = userUseCase.createUser(formular);
             return ResponseEntity.ok(benutzer);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }
-        catch(RegestrierungsFormularException e) {
+        } catch (IllegalArgumentException | RegestrierungsFormularException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }

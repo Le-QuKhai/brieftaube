@@ -18,13 +18,13 @@ public class UserUseCaseImpl implements UserUseCase {
     @Override
     public Benutzer createUser(RegestrierungsFormular formular) throws RegestrierungsFormularException {
         // check preconditions
-        Assert.notNull(formular, "Parameter 'customer' must not be null!");
+        Assert.notNull(formular, "Parameter 'formular' must not be null!");
 
         if(!formular.getPasswort().equals(formular.getPassword2())){
-            throw new RegestrierungsFormularException("");
+            throw new RegestrierungsFormularException("Passwörter stimmen nicht überein.");
         }
         else if(benutzerRepository.existsByBenutzerName(formular.getBenutzername())) {
-            throw new RegestrierungsFormularException("Benutzername exestiert schon");
+            throw new RegestrierungsFormularException("Benutzername existiert schon.");
         }
 
         Benutzer user = new Benutzer(formular.getBenutzername(), formular.getPasswort());
