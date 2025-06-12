@@ -27,11 +27,11 @@ This Web-application project is to teach us agile software engineering processes
     - Angular Typescrypt
   
 Befehle
-*docker-compose up -d
+docker-compose up -d
 
-*docker exec -it mysql_chatdb mysql -u root -p
+docker exec -it mysql_chatdb mysql -u root -p
 
-*CREATE USER 'testuser'@'%' IDENTIFIED BY 'deinPasswort';
+CREATE USER 'testuser'@'%' IDENTIFIED BY 'deinPasswort';
 GRANT ALL PRIVILEGES ON *.* TO 'testuser'@'%';
 FLUSH PRIVILEGES;
 
