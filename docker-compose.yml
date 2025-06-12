@@ -5,7 +5,7 @@ services:
     image: mysql:8.0
     container_name: mysql_chatdb
     ports:
-      - "3306:3306"
+      - "3306:3306" # Only if 3306 is free on your host. Otherwise, change to e.g., "3307:3306" and update application.yml
     environment:
       MYSQL_DATABASE: chatdb
       MYSQL_USER: testuser
@@ -18,6 +18,27 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+
+  # Add your Spring Boot application service here
+  app:
+    build: . # This tells Docker Compose to build the image using the Dockerfile in the current directory
+    container_name: brieftaube_app
+    ports:
+      - "8080:8080" # Map the Spring Boot default port to your host
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/chatdb?createDatabaseIfNotExist=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: testuser
+      SPRING_DATASOURCE_PASSWORD: testpass
+    depends_on:
+      mysql:
+        condition: service_healthy # Wait for MySQL to be healthy before starting the app
+    # If you have specific memory/CPU limits for local testing, you can add them here:
+    # deploy:
+    #   resources:
+    #     limits:
+    #       memory: 1g
+    #     reservations:
+    #       memory: 512m
 
 volumes:
   mysql_data:
