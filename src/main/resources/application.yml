@@ -4,9 +4,6 @@ logging:
 
 spring:
   datasource:
-    # Use placeholder for URL, username, password.
-    # Spring Boot will automatically pick up SPRING_DATASOURCE_URL, etc.,
-    # if they are set as environment variables.
     url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/chatdb?createDatabaseIfNotExist=true&serverTimezone=UTC}
     username: ${SPRING_DATASOURCE_USERNAME:testuser}
     password: ${SPRING_DATASOURCE_PASSWORD:testpass}

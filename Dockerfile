@@ -2,8 +2,7 @@
 FROM gradle:8.10.2-jdk17 AS builder
 WORKDIR /app
 
-# Copy the entire project into the container
-# .dockerignore should be configured to exclude build/ and other unnecessary files
+
 COPY . .
 
 # --- START DEBUGGING STEPS ---
@@ -36,8 +35,6 @@ RUN echo "--- Testing network connectivity to Gradle Plugin Portal ---" \
 RUN cat /tmp/curl_gradle_output.log # Always show the log content
 # --- END DEBUGGING STEPS ---
 
-# Build the Spring Boot application (this was failing)
-# We expect this to fail again until the network issue is resolved
 #RUN gradle clean assemble --no-daemon -x test
 RUN gradle clean assemble --no-daemon
 
