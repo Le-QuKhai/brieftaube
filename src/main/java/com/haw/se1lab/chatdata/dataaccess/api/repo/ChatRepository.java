@@ -19,4 +19,8 @@ public interface ChatRepository extends JpaRepository<Chat, Long>
      */
     @Query("SELECT t.id FROM Chat c JOIN c.teilnehmer t WHERE c.id = :ChatId AND t.id = :ParticipantId")
     Optional<Long> findParticipantInChat(@Param("ChatId") Long chatId, @Param("ParticipantId") Long participantId);
+
+    // TODO check if Query works
+    @Query("SELECT 1 FROM Chat c WHERE c.id = :ChatId")
+    Optional<Integer> findChat(Long chat);
 }

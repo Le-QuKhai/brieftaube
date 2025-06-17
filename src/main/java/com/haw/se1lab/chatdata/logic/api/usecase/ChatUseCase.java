@@ -23,4 +23,5 @@ public interface ChatUseCase {
      */
     public boolean checkIfParticipantExists(Chat chat, Benutzer teilnehmer);
 
+    boolean checkIfChatExists(Chat chat);
 }

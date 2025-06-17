@@ -35,4 +35,10 @@ public class ChatUseCaseImpl implements ChatUseCase {
     public boolean checkIfParticipantExists(Chat chat, Benutzer teilnehmer) {
         return chatRepository.findParticipantInChat(chat.getId(), teilnehmer.getId()).isPresent();
     }
+
+    @Override
+    public boolean checkIfChatExists(Chat chat) {
+        // TODO test if query returns 1 or 0
+        return chatRepository.findChat(chat.getId()).get() == 1;
+    }
 }
