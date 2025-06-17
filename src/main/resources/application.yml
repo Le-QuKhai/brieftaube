@@ -1,6 +1,7 @@
 logging:
   level:
     org.springframework: WARN
+    org.springframework.web: Debug
 ---
 spring:
   jpa:
