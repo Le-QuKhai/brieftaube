@@ -8,6 +8,8 @@ import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -37,7 +39,14 @@ public class ChatFacadeImpl implements ChatFacade {
     }
 
     @Override
-    public void createChat(Chat chat) {
-        chatUseCase.createChat(chat);
+    public ResponseEntity<?> createChat(Chat chat) {
+        if (chatUseCase.checkIfChatExists(chat)) {
+            return ResponseEntity.badRequest().body("Chat already exists");
+        } else {
+            Chat chat1 = chatUseCase.createChat(chat);
+            return ResponseEntity.ok(chat1);
+        }
     }
+
+
 }

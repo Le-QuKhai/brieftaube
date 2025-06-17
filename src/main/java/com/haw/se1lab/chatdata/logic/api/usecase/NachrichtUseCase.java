@@ -5,5 +5,7 @@ import com.haw.se1lab.chatdata.dataaccess.api.entity.Nachricht;
 
 public interface NachrichtUseCase {
 
-    boolean createNachricht(Nachricht nachricht, Chat chat);
+    Nachricht createNachricht(Nachricht nachricht, Chat chat);
+
+    boolean checkIfNachrichtExists(Nachricht nachricht);
 }

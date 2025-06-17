@@ -18,11 +18,12 @@ public class NachrichtFacadeImpl implements NachrichtFacade {
 
     @Override
     public ResponseEntity<?> createNachricht(Nachricht nachricht, Chat chat) {
-        if (nachrichtUseCase.createNachricht(nachricht, chat)) {
-            return new ResponseEntity<>(HttpStatus.CREATED);
+        Nachricht n = nachrichtUseCase.createNachricht(nachricht, chat);
+        if (n == null) {
+            return ResponseEntity.badRequest().body("Chat doesn't exist or Message Sender not in Chat");
         }
         else {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return ResponseEntity.ok(n);
         }
     }
 }

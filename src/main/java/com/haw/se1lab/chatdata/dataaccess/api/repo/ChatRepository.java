@@ -22,5 +22,6 @@ public interface ChatRepository extends JpaRepository<Chat, Long>
 
     // TODO check if Query works
     @Query("SELECT 1 FROM Chat c WHERE c.id = :ChatId")
-    Optional<Integer> findChat(Long chat);
+    Optional<Integer> checkIfChatExists(@Param("ChatId") Long chatId);
+
 }

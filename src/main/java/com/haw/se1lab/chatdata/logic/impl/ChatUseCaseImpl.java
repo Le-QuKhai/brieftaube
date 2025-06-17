@@ -15,10 +15,15 @@ public class ChatUseCaseImpl implements ChatUseCase {
     private ChatRepository chatRepository;
 
     @Override
-    public void createChat(Chat chat)
+    public Chat createChat(Chat chat)
     {
         Assert.notNull(chat, "chat must not be null");
-        chatRepository.save(chat);
+        if (checkIfChatExists(chat)) {
+            return null;
+        }
+        else {
+            return chatRepository.save(chat);
+        }
     }
 
     @Override
@@ -26,7 +31,7 @@ public class ChatUseCaseImpl implements ChatUseCase {
     {
         Assert.notNull(chat, "Chat must not be null");
         Assert.notNull(teilnehmer, "Teilnehmer must not be null");
-        chat.addTeilnehmer((Benutzer) teilnehmer);
+        chat.addTeilnehmer(teilnehmer);
         chatRepository.save(chat);
 
     }
@@ -39,6 +44,6 @@ public class ChatUseCaseImpl implements ChatUseCase {
     @Override
     public boolean checkIfChatExists(Chat chat) {
         // TODO test if query returns 1 or 0
-        return chatRepository.findChat(chat.getId()).get() == 1;
+        return chatRepository.checkIfChatExists(chat.getId()).get() == 1;
     }
 }
