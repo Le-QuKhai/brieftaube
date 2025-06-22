@@ -1,4 +1,4 @@
-package com.haw.se1lab.users.logic.api.usecases.facade.api;
+package com.haw.se1lab.users.facade.api;
 
 import com.haw.se1lab.Application;
 import com.haw.se1lab.users.common.api.datatype.EmailAdresse;

@@ -2,11 +2,14 @@ package com.haw.se1lab.chatdata.logic.impl;
 
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Chat;
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Nachricht;
+import com.haw.se1lab.chatdata.dataaccess.api.repo.ChatRepository;
 import com.haw.se1lab.chatdata.dataaccess.api.repo.NachrichtRepository;
 import com.haw.se1lab.chatdata.logic.api.usecase.ChatUseCase;
 import com.haw.se1lab.chatdata.logic.api.usecase.NachrichtUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 @Component
 public class NachrichtUseCaseImpl implements NachrichtUseCase {
@@ -18,6 +21,8 @@ public class NachrichtUseCaseImpl implements NachrichtUseCase {
     // wird verwendet, um zu prüfen, ob der Chat schon existiert.
     @Autowired
     private ChatUseCase chatUseCase;
+    @Autowired
+    private ChatRepository chatRepository;
 
 
     @Override
@@ -26,7 +31,9 @@ public class NachrichtUseCaseImpl implements NachrichtUseCase {
         if (!checkIfNachrichtExists(nachricht) && chatUseCase.checkIfChatExists(chat)
                && chat.getTeilnehmer().contains(nachricht.getSender())) {
             chat.addNachricht(nachricht);
-            return nachrichtRepository.save(nachricht);
+            Nachricht saveNachricht =  nachrichtRepository.save(nachricht);
+            chatRepository.save(chat);
+            return saveNachricht;
         }
         else {
             return null;
@@ -35,7 +42,8 @@ public class NachrichtUseCaseImpl implements NachrichtUseCase {
 
     @Override
     public boolean checkIfNachrichtExists(Nachricht nachricht) {
-        return (nachrichtRepository.checkIfNachrichtExists(nachricht.getId()).get() == 1);
+        Optional<Integer> nachrichte = nachrichtRepository.checkIfNachrichtExists(nachricht.getId());
+        return nachrichte.isPresent() && nachrichte.get() == 1;
     }
 
 }
