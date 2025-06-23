@@ -34,7 +34,7 @@ public class ChatFacadeImpl implements ChatFacade {
 
         chatUseCase.addParticipant(chat, teilnehmer);
 
-        log.info("Starte addParticipant");
+        log.info("Participant added to Chat: " + chat.getId() + " with User: " + teilnehmer.getId());
 
     }
 
@@ -46,6 +46,21 @@ public class ChatFacadeImpl implements ChatFacade {
             Chat chat1 = chatUseCase.createChat(chat);
             return ResponseEntity.ok(chat1);
         }
+    }
+
+    @Override
+    public ResponseEntity<?> getAllChatsByUser(Benutzer benutzer) {
+        if (benutzer == null) {
+            return ResponseEntity.badRequest().body("Benutzer must not be null");
+        } else {
+            return ResponseEntity.ok(chatUseCase.getAllChatsByUser(benutzer));
+        }
+    }
+
+    @Override
+    public ResponseEntity<?> getChat(Long chatId) {
+        Chat chat = chatUseCase.getChat(chatId);
+        return ResponseEntity.ok(chat == null ? HttpStatus.BAD_REQUEST : chat);
     }
 
 

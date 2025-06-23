@@ -3,6 +3,8 @@ package com.haw.se1lab.chatdata.logic.api.usecase;
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Chat;
 import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
 
+import java.util.List;
+
 public interface ChatUseCase {
 
     Chat createChat(Chat chat);
@@ -24,4 +26,8 @@ public interface ChatUseCase {
     boolean checkIfParticipantExists(Chat chat, Benutzer teilnehmer);
 
     boolean checkIfChatExists(Chat chat);
+
+    List<Chat> getAllChatsByUser(Benutzer benutzer);
+
+    Chat getChat(Long chatId);
 }

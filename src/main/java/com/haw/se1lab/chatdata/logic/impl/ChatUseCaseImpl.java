@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+import java.util.List;
+import java.util.Optional;
+
 @Component
 public class ChatUseCaseImpl implements ChatUseCase {
 
@@ -46,4 +49,17 @@ public class ChatUseCaseImpl implements ChatUseCase {
         // TODO test if query returns 1 or 0
         return chatRepository.checkIfChatExists(chat.getId()).get() == 1;
     }
+
+    @Override
+    public List<Chat> getAllChatsByUser(Benutzer benutzer) {
+        Optional<List<Chat>> chats = chatRepository.findMyChats(benutzer.getId());
+
+        return chats.orElse(List.of());
+    }
+
+    @Override
+    public Chat getChat(Long chatId) {
+        return chatRepository.findById(chatId).orElse(null);
+    }
+
 }

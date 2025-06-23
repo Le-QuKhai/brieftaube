@@ -1,10 +1,12 @@
 package com.haw.se1lab.chatdata.dataaccess.api.repo;
 
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Chat;
+import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 
@@ -23,5 +25,8 @@ public interface ChatRepository extends JpaRepository<Chat, Long>
     // TODO check if Query works
     @Query("SELECT 1 FROM Chat c WHERE c.id = :ChatId")
     Optional<Integer> checkIfChatExists(@Param("ChatId") Long chatId);
+
+    @Query("SELECT c FROM Chat c JOIN c.teilnehmer t WHERE t.id = :benutzerId")
+    Optional<List<Chat>> findMyChats(@Param("benutzerId") Long benutzerId);
 
 }
