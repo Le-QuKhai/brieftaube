@@ -41,6 +41,6 @@ RUN gradle clean assemble --no-daemon
 # Stage 2: Run the app using a lightweight JRE
 FROM eclipse-temurin:17-jre
 WORKDIR /app
-COPY --from=builder /app/build/libs/*.jar app.jar
+COPY --from=builder /app/build/libs/*.jar ./
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]

@@ -3,6 +3,7 @@ buildscript {
     ext {
         springBootVersion = '3.3.4'
     }
+
     repositories {
         mavenCentral()
     }
@@ -78,3 +79,8 @@ allprojects {
         options.compilerArgs << "-Xlint:deprecation"
     }
 }
+
+bootJar {
+    archiveFileName = 'app.jar'
+}
+
