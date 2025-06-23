@@ -13,6 +13,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @RequestMapping(path = "/message")
 public interface NachrichtFacade {
 
+    /**
+     * Erstellt eine Nachricht, in den übergebenen Chat
+     * @param nachricht die Nachricht, die erstellt werden soll
+     * @param chat der Chat, in den die Nachricht geschrieben worden ist
+     * @return die erstellte Nachricht
+     */
     @PostMapping
     @ResponseStatus(HttpStatus.OK) // defines the HTTP status of the returned HTTP response
     ResponseEntity<?> createNachricht(@RequestBody Nachricht nachricht, Chat chat);

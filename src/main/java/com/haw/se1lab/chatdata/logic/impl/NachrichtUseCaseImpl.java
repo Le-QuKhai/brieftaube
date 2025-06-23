@@ -17,7 +17,7 @@ public class NachrichtUseCaseImpl implements NachrichtUseCase {
     @Autowired
     private NachrichtRepository nachrichtRepository;
 
-    // TODO: ist das erlaubt bzw. gibt es etwas besseres?
+    // TODO: ist das erlaubt bzw. gibt es etwas besseres / ja ist erlaubt?
     // wird verwendet, um zu prüfen, ob der Chat schon existiert.
     @Autowired
     private ChatUseCase chatUseCase;
@@ -25,6 +25,9 @@ public class NachrichtUseCaseImpl implements NachrichtUseCase {
     private ChatRepository chatRepository;
 
 
+    /**
+     * @see NachrichtUseCase
+     */
     @Override
     public Nachricht createNachricht(Nachricht nachricht, Chat chat) {
         // Nachricht darf noch nicht existieren | Chat muss schon existieren
@@ -40,6 +43,9 @@ public class NachrichtUseCaseImpl implements NachrichtUseCase {
         }
     }
 
+    /**
+     * @see NachrichtUseCase
+     */
     @Override
     public boolean checkIfNachrichtExists(Nachricht nachricht) {
         Optional<Integer> nachrichte = nachrichtRepository.checkIfNachrichtExists(nachricht.getId());

@@ -2,6 +2,7 @@ package com.haw.se1lab.chatdata.facade.impl;
 
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Chat;
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Nachricht;
+import com.haw.se1lab.chatdata.facade.api.ChatFacade;
 import com.haw.se1lab.chatdata.facade.api.NachrichtFacade;
 import com.haw.se1lab.chatdata.logic.api.usecase.NachrichtUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,9 @@ public class NachrichtFacadeImpl implements NachrichtFacade {
     @Autowired
     private NachrichtUseCase nachrichtUseCase;
 
+    /**
+     * @see NachrichtFacade
+     */
     @Override
     public ResponseEntity<?> createNachricht(Nachricht nachricht, Chat chat) {
         Nachricht n = nachrichtUseCase.createNachricht(nachricht, chat);

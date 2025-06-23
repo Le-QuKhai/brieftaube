@@ -25,9 +25,24 @@ public interface ChatUseCase {
      */
     boolean checkIfParticipantExists(Chat chat, Benutzer teilnehmer);
 
+    /**
+     * Überprüft ob der Chat existiert.
+     * @param chat der Chat, der überprüft werden soll
+     * @return true, wenn er existiert. False, wenn nicht.
+     */
     boolean checkIfChatExists(Chat chat);
 
+    /**
+     * Gibt alle Chats zurück, in denen der übergebene User drinnen ist.
+     * @param benutzer der Benutzer, für den man alle Chats holen soll
+     * @return Liste von Chats, leere Liste, wenn er ihn keinen drinnen ist.
+     */
     List<Chat> getAllChatsByUser(Benutzer benutzer);
 
+    /**
+     * Gibt den Chat mit der übergebenen Id zurück
+     * @param chatId die Id von den Chat
+     * @return der Chat mit der Id
+     */
     Chat getChat(Long chatId);
 }

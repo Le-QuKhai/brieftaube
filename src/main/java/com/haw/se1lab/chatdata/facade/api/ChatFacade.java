@@ -10,6 +10,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Die Rest-Schnittstelle, um von außen, mit dem Server zu kommunizieren.
+ * Hierüber werden alle Sachen geregelt die mit Chats zutun haben.
+ */
 @RequestMapping(path="/api/chat")
 public interface ChatFacade
 {
@@ -24,14 +28,29 @@ public interface ChatFacade
    void addParticipant(@RequestBody Chat chat, @RequestBody Benutzer teilnehmer) throws ParticipantAlreadyExistsException;
 
 
+    /**
+     * Erstellt einen Chat und speichert ihn in der Datenbank
+     * @param chat der Chat, der erstellt werden soll
+     * @return den erstellten Chat.
+     */
     @PostMapping
     @ResponseStatus(HttpStatus.OK) // defines the HTTP status of the returned HTTP response
     ResponseEntity<?> createChat(@RequestBody Chat chat);
 
+    /**
+     * Gibt alle Chats zurück, in denen der übergebene User drinnen ist.
+     * @param benutzer der Benutzer, für den man alle Chats holen soll
+     * @return Liste von Chats, leere Liste, wenn er ihn keinen drinnen ist.
+     */
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<?> getAllChatsByUser(@RequestBody Benutzer benutzer);
 
+    /**
+     * Gibt den Chat mit der übergebenen Id zurück
+     * @param chatId die Id von den Chat
+     * @return der Chat mit der Id
+     */
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<?> getChat(@RequestParam Long chatId);

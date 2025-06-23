@@ -17,6 +17,9 @@ public class ChatUseCaseImpl implements ChatUseCase {
     @Autowired
     private ChatRepository chatRepository;
 
+    /**
+     * @see ChatUseCase
+     */
     @Override
     public Chat createChat(Chat chat)
     {
@@ -29,6 +32,9 @@ public class ChatUseCaseImpl implements ChatUseCase {
         }
     }
 
+    /**
+     * @see ChatUseCase
+     */
     @Override
     public void addParticipant(Chat chat, Benutzer teilnehmer)
     {
@@ -39,17 +45,26 @@ public class ChatUseCaseImpl implements ChatUseCase {
 
     }
 
+    /**
+     * @see ChatUseCase
+     */
     @Override
     public boolean checkIfParticipantExists(Chat chat, Benutzer teilnehmer) {
         return chatRepository.findParticipantInChat(chat.getId(), teilnehmer.getId()).isPresent();
     }
 
+    /**
+     * @see ChatUseCase
+     */
     @Override
     public boolean checkIfChatExists(Chat chat) {
         // TODO test if query returns 1 or 0
         return chatRepository.checkIfChatExists(chat.getId()).get() == 1;
     }
 
+    /**
+     * @see ChatUseCase
+     */
     @Override
     public List<Chat> getAllChatsByUser(Benutzer benutzer) {
         Optional<List<Chat>> chats = chatRepository.findMyChats(benutzer.getId());
@@ -57,6 +72,9 @@ public class ChatUseCaseImpl implements ChatUseCase {
         return chats.orElse(List.of());
     }
 
+    /**
+     * @see ChatUseCase
+     */
     @Override
     public Chat getChat(Long chatId) {
         return chatRepository.findById(chatId).orElse(null);

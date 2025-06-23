@@ -22,6 +22,9 @@ public class ChatFacadeImpl implements ChatFacade {
 
     private final Log log = LogFactory.getLog(getClass());
 
+    /**
+     * @see ChatFacade
+     */
     @Override
     public void addParticipant(Chat chat, Benutzer teilnehmer) throws ParticipantAlreadyExistsException
     {
@@ -38,6 +41,9 @@ public class ChatFacadeImpl implements ChatFacade {
 
     }
 
+    /**
+     * @see ChatFacade
+     */
     @Override
     public ResponseEntity<?> createChat(Chat chat) {
         if (chatUseCase.checkIfChatExists(chat)) {
@@ -48,6 +54,9 @@ public class ChatFacadeImpl implements ChatFacade {
         }
     }
 
+    /**
+     * @see ChatFacade
+     */
     @Override
     public ResponseEntity<?> getAllChatsByUser(Benutzer benutzer) {
         if (benutzer == null) {
@@ -57,10 +66,13 @@ public class ChatFacadeImpl implements ChatFacade {
         }
     }
 
+    /**
+     * @see ChatFacade
+     */
     @Override
     public ResponseEntity<?> getChat(Long chatId) {
         Chat chat = chatUseCase.getChat(chatId);
-        return ResponseEntity.ok(chat == null ? HttpStatus.BAD_REQUEST : chat);
+        return ResponseEntity.ok(chat == null ? HttpStatus.BAD_REQUEST : chat); // null, kein Chat mit der Id existiert.
     }
 
 
