@@ -1,7 +1,9 @@
+
 buildscript {
     ext {
         springBootVersion = '3.3.4'
     }
+
     repositories {
         mavenCentral()
     }
@@ -11,15 +13,14 @@ buildscript {
 }
 
 plugins {
-    id "com.github.ben-manes.versions" version "0.51.0"
+    id "org.springframework.boot" version "3.3.4"
     id "io.spring.dependency-management" version "1.1.6"
+    id "com.github.ben-manes.versions" version "0.51.0"
+    id "eclipse"
+    id "groovy"
+    id "jacoco"
+    id "java"
 }
-
-apply plugin: 'eclipse'
-apply plugin: 'groovy'
-apply plugin: 'jacoco'
-apply plugin: 'java'
-apply plugin: 'org.springframework.boot'
 
 group = "com.haw.arne-busch"
 version = '0.0.1-SNAPSHOT'
@@ -30,35 +31,37 @@ repositories {
 }
 
 dependencies {
+    // Core dependencies
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+
+    // Utility libs
     implementation 'commons-validator:commons-validator:1.9.0'
     implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
     implementation 'jakarta.xml.bind:jakarta.xml.bind-api:4.0.2'
     implementation 'org.apache.commons:commons-lang3:3.14.0'
     implementation 'org.json:json:20240303'
-    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-mail'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
 
+    // Lombok
     compileOnly 'org.projectlombok:lombok:1.18.34'
-
     annotationProcessor 'org.projectlombok:lombok:1.18.34'
 
-    runtimeOnly 'com.h2database:h2:2.2.224'
-    runtimeOnly 'com.mysql:mysql-connector-j:8.3.0'
+    // Database drivers
+    runtimeOnly 'com.mysql:mysql-connector-j:8.3.0' // use MySQL in production
+    runtimeOnly 'com.h2database:h2:2.2.224'         // optional: in-memory DB for dev/tests
     runtimeOnly 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
     runtimeOnly 'org.springframework.boot:spring-boot-devtools'
 
+    // Testing
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+    testImplementation 'org.assertj:assertj-core:3.25.3'
+    testImplementation 'org.hamcrest:hamcrest:2.2'
     testImplementation 'io.rest-assured:json-path:5.4.0'
     testImplementation 'io.rest-assured:spring-mock-mvc:5.4.0'
     testImplementation 'io.rest-assured:xml-path:5.4.0'
-    testImplementation 'com.mysql:mysql-connector-j:8.3.0'
-    testImplementation 'org.assertj:assertj-core:3.25.3'
-    testImplementation 'org.hamcrest:hamcrest:2.2'
-    testImplementation 'org.springframework.boot:spring-boot-starter-test'
 
-    testCompileOnly 'org.junit.platform:junit-platform-commons:1.10.3'
     testCompileOnly 'org.projectlombok:lombok:1.18.34'
-
     testAnnotationProcessor 'org.projectlombok:lombok:1.18.34'
 }
 
@@ -76,3 +79,8 @@ allprojects {
         options.compilerArgs << "-Xlint:deprecation"
     }
 }
+
+bootJar {
+    archiveFileName = 'app.jar'
+}
+

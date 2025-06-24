@@ -1,16 +1,17 @@
 logging:
   level:
     org.springframework: WARN
+
 spring:
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/chatdb?createDatabaseIfNotExist=true&serverTimezone=UTC}
-    username: ${SPRING_DATASOURCE_USERNAME:testuser}
-    password: ${SPRING_DATASOURCE_PASSWORD:testpass}
+    url: jdbc:mysql://localhost:3306/chatdb?createDatabaseIfNotExist=true&serverTimezone=UTC
+    username: testuser
+    password: testpass
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
     hibernate:
-      ddl-auto: create # <-- Tabellen automatisch generieren
+      ddl-auto: create         # <-- Tabellen automatisch generieren
     show-sql: true
     properties:
       hibernate:
