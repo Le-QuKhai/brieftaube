@@ -1,7 +1,6 @@
 logging:
   level:
     org.springframework: WARN
-
 spring:
   datasource:
     url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/chatdb?createDatabaseIfNotExist=true&serverTimezone=UTC}

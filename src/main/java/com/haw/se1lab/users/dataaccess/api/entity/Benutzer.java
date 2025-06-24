@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.security.Timestamp;
+import java.sql.Timestamp;
 
 @Entity
 @Getter
@@ -25,6 +25,5 @@ public class Benutzer extends AbstractEntity
     public Benutzer(String benutzername, String password) {
         this.benutzername = benutzername;
         this.password = password;
-        this.letzerLogin = letzerLogin;
     }
 }

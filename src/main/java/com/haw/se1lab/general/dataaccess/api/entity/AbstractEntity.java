@@ -6,6 +6,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
 
+/**
+ * Klasse von den allen Entities erbene, damit sie eine unique ID haben
+ */
 @MappedSuperclass
 public class AbstractEntity
 {

@@ -11,6 +11,12 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
+/**
+ * Eine Nachricht repräsentiert einen Text, der über einen Chat geschrieben und verschickt wird.
+ * Zusätzlich hat eine Nachricht noch seinen Sender, der Benutzer, der die Nachricht geschrieben hat.
+ * Zudem das Datum, an das die Nachricht geschickt wurde.
+ */
+
 @Getter
 @Entity
 @NoArgsConstructor
@@ -21,7 +27,6 @@ public class Nachricht extends AbstractEntity
     private Date sendDate;
     @ManyToOne
     private Benutzer sender;
-
     public Nachricht(String nachricht, Date sendDate, Benutzer sender)
     {
         this.nachricht = nachricht;
