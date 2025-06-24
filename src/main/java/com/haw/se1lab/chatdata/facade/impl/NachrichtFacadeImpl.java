@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @Component
 @RestController
 public class NachrichtFacadeImpl implements NachrichtFacade {
@@ -36,8 +38,8 @@ public class NachrichtFacadeImpl implements NachrichtFacade {
      */
     @Override
     public ResponseEntity<?> getNewMessages(Long chatId, Long lastMessageId) {
-        nachrichtUseCase.getNewMessages(chatId, lastMessageId);
+        List<Nachricht> messages = nachrichtUseCase.getNewMessages(chatId, lastMessageId);
 
-        return null;
+        return ResponseEntity.ok(messages);
     }
 }

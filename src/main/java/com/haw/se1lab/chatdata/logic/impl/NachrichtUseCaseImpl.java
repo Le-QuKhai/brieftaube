@@ -72,7 +72,7 @@ public class NachrichtUseCaseImpl implements NachrichtUseCase {
         List<Nachricht> messages = chat.getNachrichten();
         List<Nachricht> newMessages = new ArrayList<>();
 
-        if(nachrichtRepository.checkIfNachrichtExists(lastMessageId).get() == 1) {
+        if(nachrichtRepository.checkIfNachrichtExists(lastMessageId).get() == 0) {
             newMessages = messages;
         }
         else {
