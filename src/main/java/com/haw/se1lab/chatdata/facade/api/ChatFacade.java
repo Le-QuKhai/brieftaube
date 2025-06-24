@@ -55,7 +55,7 @@ public interface ChatFacade
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<?> getChat(@RequestParam Long chatId);
 
-    @GetMapping("/new")
+    @GetMapping("/get_new")
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<?> getNewChats(@RequestBody List<Long> chatIds, @RequestParam Long userId);
 }

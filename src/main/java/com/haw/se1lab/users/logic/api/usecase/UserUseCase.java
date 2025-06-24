@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 
 public interface UserUseCase {
 
-    public Benutzer createUser(RegestrierungsFormular formular) throws RegestrierungsFormularException;
+    Benutzer createUser(RegestrierungsFormular formular) throws RegestrierungsFormularException;
 
     /**
      * Versucht einen Benutzer einzuloggen.
@@ -18,5 +18,5 @@ public interface UserUseCase {
      * @throws IncorrectPasswordException wenn der Benutzer ein falsches Passwort eingegeben hat
      * @throws UserDoesntExistsException wenn der Benutzer mit diesen Benutzernamen gar nicht existiert
      */
-    public Benutzer loginBenutzer(Benutzer benutzer) throws IncorrectPasswordException, UserDoesntExistsException;
+    Benutzer loginBenutzer(Benutzer benutzer) throws IncorrectPasswordException, UserDoesntExistsException;
 }

@@ -39,14 +39,14 @@ public class NachrichtFacadeImpl implements NachrichtFacade {
      * @see NachrichtFacade
      */
     @Override
-    public ResponseEntity<?> getNewMessages(Long chatId, Long lastMessageId) {
+    public ResponseEntity<?> getNewMessagesByOneChat(Long chatId, Long lastMessageId) {
         List<Nachricht> messages = nachrichtUseCase.getNewMessages(chatId, lastMessageId);
 
         return ResponseEntity.ok(messages);
     }
 
     @Override
-    public ResponseEntity<?> getNewMessages(List<Long> chatIds, List<Long> lastMessageIds) {
+    public ResponseEntity<?> getNewMessagesByMultChats(List<Long> chatIds, List<Long> lastMessageIds) {
         Map<Long, List<Nachricht>> newMessages = new HashMap<>();
 
         if(chatIds.size() != lastMessageIds.size()) {
@@ -59,8 +59,5 @@ public class NachrichtFacadeImpl implements NachrichtFacade {
 
         return ResponseEntity.ok(newMessages);
     }
-
-
-
 
 }

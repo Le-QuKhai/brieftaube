@@ -2,7 +2,6 @@ package com.haw.se1lab.chatdata.facade.api;
 
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Chat;
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Nachricht;
-import com.haw.se1lab.users.common.api.datatype.RegestrierungsFormular;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +17,7 @@ public interface NachrichtFacade {
      * @param chat der Chat, in den die Nachricht geschrieben worden ist
      * @return die erstellte Nachricht
      */
-    @PostMapping
+    @PostMapping("/create_new")
     @ResponseStatus(HttpStatus.OK) // defines the HTTP status of the returned HTTP response
     ResponseEntity<?> createNachricht(@RequestBody Nachricht nachricht, Chat chat);
 
@@ -31,10 +30,10 @@ public interface NachrichtFacade {
      */
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<?> getNewMessages(@RequestParam Long chatId, @RequestParam Long lastMessageId);
+    ResponseEntity<?> getNewMessagesByOneChat(@RequestParam Long chatId, @RequestParam Long lastMessageId);
 
-    @GetMapping("/new")
+    @GetMapping("/get_new")
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<?> getNewMessages(@RequestBody List<Long> chatIds, @RequestBody List<Long> userId);
+    ResponseEntity<?> getNewMessagesByMultChats(@RequestBody List<Long> chatIds, @RequestBody List<Long> lastMessageIds);
 
 }
