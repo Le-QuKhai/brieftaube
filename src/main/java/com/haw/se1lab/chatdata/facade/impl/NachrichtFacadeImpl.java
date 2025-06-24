@@ -11,7 +11,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Component
 @RestController
@@ -42,4 +44,23 @@ public class NachrichtFacadeImpl implements NachrichtFacade {
 
         return ResponseEntity.ok(messages);
     }
+
+    @Override
+    public ResponseEntity<?> getNewMessages(List<Long> chatIds, List<Long> lastMessageIds) {
+        Map<Long, List<Nachricht>> newMessages = new HashMap<>();
+
+        if(chatIds.size() != lastMessageIds.size()) {
+            return ResponseEntity.badRequest().body("ChatIds and LastMessageIds must have the same size");
+        }
+
+        for(int i = 0; i < chatIds.size(); i++) {
+            newMessages.put(chatIds.get(i), nachrichtUseCase.getNewMessages(chatIds.get(i), lastMessageIds.get(i)));
+        }
+
+        return ResponseEntity.ok(newMessages);
+    }
+
+
+
+
 }

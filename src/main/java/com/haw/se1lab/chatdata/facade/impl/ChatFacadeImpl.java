@@ -13,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 @Component
 @RestController
 public class ChatFacadeImpl implements ChatFacade {
@@ -62,7 +64,7 @@ public class ChatFacadeImpl implements ChatFacade {
         if (benutzer == null) {
             return ResponseEntity.badRequest().body("Benutzer must not be null");
         } else {
-            return ResponseEntity.ok(chatUseCase.getAllChatsByUser(benutzer));
+            return ResponseEntity.ok(chatUseCase.getAllChatsByUser(benutzer.getId()));
         }
     }
 
@@ -73,6 +75,12 @@ public class ChatFacadeImpl implements ChatFacade {
     public ResponseEntity<?> getChat(Long chatId) {
         Chat chat = chatUseCase.getChat(chatId);
         return ResponseEntity.ok(chat == null ? HttpStatus.BAD_REQUEST : chat); // null, kein Chat mit der Id existiert.
+    }
+
+    @Override
+    public ResponseEntity<?> getNewChats(List<Long> chatIds, Long userId) {
+        List<Chat> newChats = chatUseCase.getNewChats(chatIds, userId);
+        return ResponseEntity.ok(newChats);
     }
 
 

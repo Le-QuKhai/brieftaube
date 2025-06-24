@@ -66,8 +66,8 @@ public class ChatUseCaseImpl implements ChatUseCase {
      * @see ChatUseCase
      */
     @Override
-    public List<Chat> getAllChatsByUser(Benutzer benutzer) {
-        Optional<List<Chat>> chats = chatRepository.findMyChats(benutzer.getId());
+    public List<Chat> getAllChatsByUser(Long userId) {
+        Optional<List<Chat>> chats = chatRepository.findMyChats(userId);
 
         return chats.orElse(List.of());
     }
@@ -78,6 +78,13 @@ public class ChatUseCaseImpl implements ChatUseCase {
     @Override
     public Chat getChat(Long chatId) {
         return chatRepository.findById(chatId).orElse(null);
+    }
+
+    @Override
+    public List<Chat> getNewChats(List<Long> chatIds, Long userId) {
+        List<Chat> chats = getAllChatsByUser(userId);
+        chats.removeIf(chat -> chatIds.contains(chat.getId()));
+        return chats;
     }
 
 }

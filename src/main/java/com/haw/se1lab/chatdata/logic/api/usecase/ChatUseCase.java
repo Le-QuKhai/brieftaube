@@ -34,10 +34,10 @@ public interface ChatUseCase {
 
     /**
      * Gibt alle Chats zurück, in denen der übergebene User drinnen ist.
-     * @param benutzer der Benutzer, für den man alle Chats holen soll
+     * @param userId die Id des Benutzers, für den man alle Chats holen soll
      * @return Liste von Chats, leere Liste, wenn er ihn keinen drinnen ist.
      */
-    List<Chat> getAllChatsByUser(Benutzer benutzer);
+    List<Chat> getAllChatsByUser(Long userId);
 
     /**
      * Gibt den Chat mit der übergebenen Id zurück
@@ -45,4 +45,6 @@ public interface ChatUseCase {
      * @return der Chat mit der Id
      */
     Chat getChat(Long chatId);
+
+    List<Chat> getNewChats(List<Long> chatIds, Long userId);
 }

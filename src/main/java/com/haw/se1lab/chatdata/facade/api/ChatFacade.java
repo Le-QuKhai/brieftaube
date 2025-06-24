@@ -3,12 +3,12 @@ package com.haw.se1lab.chatdata.facade.api;
 
 import com.haw.se1lab.chatdata.common.api.exception.ParticipantAlreadyExistsException;
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Chat;
-import com.haw.se1lab.chatdata.dataaccess.api.entity.Nachricht;
 import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * Die Rest-Schnittstelle, um von außen, mit dem Server zu kommunizieren.
@@ -54,4 +54,8 @@ public interface ChatFacade
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<?> getChat(@RequestParam Long chatId);
+
+    @GetMapping("/new")
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<?> getNewChats(@RequestBody List<Long> chatIds, @RequestParam Long userId);
 }

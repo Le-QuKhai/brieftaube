@@ -7,6 +7,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequestMapping(path = "/message")
 public interface NachrichtFacade {
 
@@ -30,5 +32,9 @@ public interface NachrichtFacade {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<?> getNewMessages(@RequestParam Long chatId, @RequestParam Long lastMessageId);
+
+    @GetMapping("/new")
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<?> getNewMessages(@RequestBody List<Long> chatIds, @RequestBody List<Long> userId);
 
 }
