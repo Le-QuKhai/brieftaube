@@ -41,4 +41,12 @@ public interface ChatRepository extends JpaRepository<Chat, Long>
     @Query("SELECT c FROM Chat c JOIN c.teilnehmer t WHERE t.id = :benutzerId")
     Optional<List<Chat>> findMyChats(@Param("benutzerId") Long benutzerId);
 
+    /**
+     * Gibt den Chat mit der Id wieder.
+     * @param chatId die Id des Chats, der gesucht werden soll.
+     * @return den Chat mit der Id oder null, wenn kein Chat mit der Id existiert.
+     */
+    @Override
+    Optional<Chat> findById(Long chatId);
+
 }

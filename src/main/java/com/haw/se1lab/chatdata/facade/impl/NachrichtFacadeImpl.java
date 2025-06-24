@@ -30,4 +30,14 @@ public class NachrichtFacadeImpl implements NachrichtFacade {
             return ResponseEntity.ok(n);
         }
     }
+
+    /**
+     * @see NachrichtFacade
+     */
+    @Override
+    public ResponseEntity<?> getNewMessages(Long chatId, Long lastMessageId) {
+        nachrichtUseCase.getNewMessages(chatId, lastMessageId);
+
+        return null;
+    }
 }

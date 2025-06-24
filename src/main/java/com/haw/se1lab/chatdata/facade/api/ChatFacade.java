@@ -54,6 +54,4 @@ public interface ChatFacade
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<?> getChat(@RequestParam Long chatId);
-
-
 }
