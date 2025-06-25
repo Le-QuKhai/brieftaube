@@ -58,4 +58,9 @@ public class UserUseCaseImpl implements UserUseCase {
             throw new UserDoesntExistsException("Benutzer mit dem benutzernamen: " + benutzer.getBenutzerName() + " existiert nicht");
         }
     }
+
+    @Override
+    public boolean checkIfUserExists(Long userId) {
+        return benutzerRepository.findById(userId).isPresent();
+    }
 }

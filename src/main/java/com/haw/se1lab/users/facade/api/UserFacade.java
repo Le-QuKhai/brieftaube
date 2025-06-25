@@ -17,4 +17,8 @@ public interface UserFacade {
     @PostMapping(value = "/login")
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<?> loginBenutzer(@RequestBody Benutzer benutzer);
+
+    @GetMapping("/exist")
+    @ResponseStatus(HttpStatus.OK)
+    ResponseEntity<?> checkIfUserExists(@RequestParam Long userId);
 }

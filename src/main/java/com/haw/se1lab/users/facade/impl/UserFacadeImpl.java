@@ -41,4 +41,13 @@ public class UserFacadeImpl implements UserFacade {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    public ResponseEntity<?> checkIfUserExists(Long userId) {
+        if(userUseCase.checkIfUserExists(userId)) {
+            return ResponseEntity.ok(true);
+        }
+        else {
+            return ResponseEntity.ok(false);
+        }
+    }
 }

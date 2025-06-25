@@ -18,4 +18,6 @@ public interface UserUseCase {
      * @throws UserDoesntExistsException wenn der Benutzer mit diesen Benutzernamen gar nicht existiert
      */
     Benutzer loginBenutzer(Benutzer benutzer) throws IncorrectPasswordException, UserDoesntExistsException;
+
+    boolean checkIfUserExists(Long userId);
 }
