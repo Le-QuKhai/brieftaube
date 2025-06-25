@@ -19,6 +19,9 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.http.HttpStatus;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -128,19 +131,21 @@ public class ChatFacadeTest {
 
     @Test
     public void getChatByIdTest() {
-        RestAssured.given()
+        Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
-                .body(chat1.getId())
+                .queryParam("chatId", chat1.getId())
 
                 .when()
                 .get("api/chat")
 
                 .then()
                 .statusCode(HttpStatus.OK.value())
-                .body("id", equalTo(chat1.getId()))
                 .body("teilnehmer.size()", is(2))
-                .body("teilnehmer[0].id", equalTo(user.getId()))
-                .body("teilnehmer[1].id", equalTo(user2.getId()));
+                .extract().response();
+
+        assertEquals(chat1.getId(), response.jsonPath().getLong("id"));
+        assertEquals(user2.getId(), response.jsonPath().getLong("teilnehmer[0].id"));
+        assertEquals(user.getId(), response.jsonPath().getLong("teilnehmer[1].id"));
     }
 
     @Test
@@ -155,6 +160,98 @@ public class ChatFacadeTest {
                 .then()
                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
+
+    @Test
+    public void getAllChats() {
+        Response response = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(user)
+
+                .when()
+                .get("api/chat/all")
+
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("size()", is(2))
+                .body("[0].teilnehmer.size()", is(2))
+                .body("[1].teilnehmer.size()", is(1))
+                .extract().response();
+
+        assertEquals(chat1.getId(), response.jsonPath().getLong("[0].id"));
+        assertEquals(chat2.getId(), response.jsonPath().getLong("[1].id"));
+    }
+
+    @Test
+    public void getAllChatsUserDontExists() {
+        Benutzer user = new Benutzer("user5", "5");
+
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(user)
+
+                .when()
+                .get("api/chat/all")
+
+                .then()
+                .statusCode(HttpStatus.OK.value()).
+                body("size()", is(0));
+    }
+
+    @Test
+    public void getAllchatsUserDontHaveChats() {
+
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(user4)
+
+                .when()
+                .get("api/chat/all")
+
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("size()", is(0));
+    }
+
+    @Test
+    public void getNewChats() {
+
+        List<Long> knownChats = new ArrayList<>(){{add(chat1.getId());}};
+
+        Response response = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(knownChats)
+                .queryParam("userId", user.getId())
+
+                .when()
+                .get("api/chat/new")
+
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("size()", is(1))
+                .body("[0].teilnehmer.size()", is(1))
+                .extract().response();
+
+        assertEquals(chat2.getId(), response.jsonPath().getLong("[0].id"));
+        assertEquals(user.getId(), response.jsonPath().getLong("[0].teilnehmer[0].id"));
+    }
+
+    @Test
+    public void getNewChatsNoNewChats() {
+        List<Long> knownChats = new ArrayList<>(){{add(chat1.getId()); add(chat2.getId());}};
+
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(knownChats)
+                .queryParam("userId", user.getId())
+
+                .when()
+                .get("api/chat/new")
+
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("size()", is(0));
+    }
+
 
 
 }
