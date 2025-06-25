@@ -7,6 +7,7 @@ import com.haw.se1lab.chatdata.dataaccess.api.repo.ChatRepository;
 import com.haw.se1lab.chatdata.dataaccess.api.repo.NachrichtRepository;
 import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
 import com.haw.se1lab.users.dataaccess.api.repo.BenutzerRepository;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
@@ -52,6 +53,13 @@ public class NachrichtenUseCaseTest {
         chatRepository.save(chat);
     }
 
+    @AfterAll
+    public void tearDownAll() {
+        chatRepository.deleteAll();
+        nachrichtRepository.deleteAll();
+        benutzerRepository.deleteAll();
+    }
+
 
 
 
@@ -73,5 +81,22 @@ public class NachrichtenUseCaseTest {
         assertEquals(savedNachricht.getId(), savedChat.getNachrichten().get(0).getId());
     }
 
+    @Test
+    @Transactional
+    public void getNewMessagesTest() {
+        Date date = new Date();
+        Nachricht nachricht1 = new Nachricht("Hallo", date, user);
+        Nachricht savedNachricht1 = nachrichtUseCase.createNachricht(nachricht1, chat);
+
+        Nachricht nachricht2 = new Nachricht("Hey", date, user2);
+        Nachricht savedNachricht2 = nachrichtUseCase.createNachricht(nachricht2, chat);
+
+        List<Nachricht> newMessages = nachrichtUseCase.getNewMessages(chat.getId(), savedNachricht1.getId());
+
+        assertEquals(1, newMessages.size());
+        assertEquals(savedNachricht2.getId(), newMessages.get(0).getId());
+
+
+    }
 
 }
