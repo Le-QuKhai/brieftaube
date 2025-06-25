@@ -1,9 +1,9 @@
 package com.haw.se1lab.users.logic.api.usecases;
 
 import com.haw.se1lab.Application;
-import com.haw.se1lab.users.common.api.datatype.RegestrierungsFormular;
+import com.haw.se1lab.users.common.api.datatype.RegistrierungsFormular;
 import com.haw.se1lab.users.common.api.exception.IncorrectPasswordException;
-import com.haw.se1lab.users.common.api.exception.RegestrierungsFormularException;
+import com.haw.se1lab.users.common.api.exception.RegistrierungsFormularException;
 import com.haw.se1lab.users.common.api.exception.UserDoesntExistsException;
 import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
 import com.haw.se1lab.users.dataaccess.api.repo.BenutzerRepository;
@@ -45,10 +45,11 @@ public class UserUseCaseTest {
 
     @Test
     public void createUserTest() {
-        RegestrierungsFormular benutzer = new RegestrierungsFormular("test2", "test", "test");
+        RegistrierungsFormular benutzer = new RegistrierungsFormular(
+                "test2", "test", "test");
         try {
             userUseCase.createUser(benutzer);
-        } catch (RegestrierungsFormularException ignored) {
+        } catch (RegistrierungsFormularException ignored) {
         }
         assertTrue(benutzerRepository.findByBenutzerName(benutzer.getBenutzerName()).isPresent());
         assertEquals(2, benutzerRepository.findAll().size());
@@ -56,21 +57,21 @@ public class UserUseCaseTest {
 
     @Test
     public void createUserWithEmptyUsernameTest() {
-        RegestrierungsFormular benutzer = new RegestrierungsFormular("", "test", "test");
-        assertThrows(RegestrierungsFormularException.class, () -> {userUseCase.createUser(benutzer);});
-
+        RegistrierungsFormular benutzer = new RegistrierungsFormular(
+                "", "test", "test");
+        assertThrows(RegistrierungsFormularException.class, () -> {userUseCase.createUser(benutzer);});
     }
 
     @Test
     public void createUserAlreadyExistTest() {
-        RegestrierungsFormular benutzer = new RegestrierungsFormular("test1", "test", "test");
-        assertThrows(RegestrierungsFormularException.class, () -> userUseCase.createUser(benutzer));
+        RegistrierungsFormular benutzer = new RegistrierungsFormular("test1", "test", "test");
+        assertThrows(RegistrierungsFormularException.class, () -> userUseCase.createUser(benutzer));
     }
 
     @Test
     public void createUserPasswordsDontMatchTest() {
-        RegestrierungsFormular benutzer = new RegestrierungsFormular("test", "test1", "test");
-        assertThrows(RegestrierungsFormularException.class, () -> userUseCase.createUser(benutzer));
+        RegistrierungsFormular benutzer = new RegistrierungsFormular("test", "test1", "test");
+        assertThrows(RegistrierungsFormularException.class, () -> userUseCase.createUser(benutzer));
     }
 
     @Test

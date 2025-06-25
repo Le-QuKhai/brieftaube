@@ -1,9 +1,7 @@
 package com.haw.se1lab.users.facade.api;
 
 import com.haw.se1lab.Application;
-import com.haw.se1lab.users.common.api.datatype.EmailAdresse;
-import com.haw.se1lab.users.common.api.datatype.RegestrierungsFormular;
-import com.haw.se1lab.users.common.api.exception.EmailInvalidException;
+import com.haw.se1lab.users.common.api.datatype.RegistrierungsFormular;
 import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
 import com.haw.se1lab.users.dataaccess.api.repo.BenutzerRepository;
 import io.restassured.RestAssured;
@@ -16,8 +14,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.http.HttpStatus;
-
-import java.sql.Timestamp;
 
 import static io.restassured.path.json.JsonPath.given;
 import static org.hamcrest.Matchers.equalTo;
@@ -33,14 +29,15 @@ public class UserFacadeTest {
 
     @Test
     public void createUserTest() {
-        RegestrierungsFormular formular = new RegestrierungsFormular("test1", "test", "test");
+        RegistrierungsFormular formular = new RegistrierungsFormular(
+                "test1", "test", "test");
 
         RestAssured.given()
         .contentType(ContentType.JSON)
         .body(formular)
 
         .when()
-        .post("/api/user")
+        .post("/api/user/register")
 
         .then()
         .statusCode(HttpStatus.OK.value())
@@ -49,10 +46,51 @@ public class UserFacadeTest {
     }
 
     @Test
-    public void loginTest() throws EmailInvalidException {
-        Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-        EmailAdresse email = EmailAdresse.get("test", "", "@gmail", ".com");
-        Benutzer benutzer = new Benutzer("test", email, "test", timestamp);
+    public void createUserWrongPWConfirmTest() {
+        RegistrierungsFormular formular = new RegistrierungsFormular(
+                "test1", "test", "tset");
+
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(formular)
+
+                .when()
+                .post("/api/user/register")
+
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    public void createUserAlreadyExistTest() {
+        RegistrierungsFormular formular = new RegistrierungsFormular(
+                "testNameExist", "test", "test");
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(formular)
+
+                .when()
+                .post("/api/user/register")
+
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("benutzerName", equalTo(formular.getBenutzerName()))
+                .body("password", equalTo(formular.getPassword()));
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(formular)
+
+                .when()
+                .post("/api/user/register")
+
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+
+    }
+
+    @Test
+    public void loginTest() {
+        Benutzer benutzer = new Benutzer("test", "test");
         benutzerRepository.save(benutzer);
 
         RestAssured.given()
@@ -66,6 +104,37 @@ public class UserFacadeTest {
                 .statusCode(HttpStatus.OK.value())
                 .body("benutzerName", equalTo(benutzer.getBenutzerName()))
                 .body("password", equalTo(benutzer.getPassword()));
+    }
 
+    @Test
+    public void loginWrongPasswordTest() {
+        Benutzer benutzer = new Benutzer("userTest", "password");
+        Benutzer login = new Benutzer("userTest", "1234");
+        benutzerRepository.save(benutzer);
+
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(login)
+
+                .when()
+                .post("/api/user/login")
+
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
+    }
+
+    @Test
+    public void loginUserNotExistTest() {
+        Benutzer login = new Benutzer("bestUser", "userBrieftaube");
+
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(login)
+
+                .when()
+                .post("/api/user/login")
+
+                .then()
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 }

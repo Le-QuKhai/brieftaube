@@ -1,15 +1,14 @@
 package com.haw.se1lab.users.logic.api.usecase;
 
-import com.haw.se1lab.users.common.api.datatype.RegestrierungsFormular;
+import com.haw.se1lab.users.common.api.datatype.RegistrierungsFormular;
 import com.haw.se1lab.users.common.api.exception.IncorrectPasswordException;
-import com.haw.se1lab.users.common.api.exception.RegestrierungsFormularException;
+import com.haw.se1lab.users.common.api.exception.RegistrierungsFormularException;
 import com.haw.se1lab.users.common.api.exception.UserDoesntExistsException;
 import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
-import org.springframework.http.ResponseEntity;
 
 public interface UserUseCase {
 
-    Benutzer createUser(RegestrierungsFormular formular) throws RegestrierungsFormularException;
+    Benutzer createUser(RegistrierungsFormular formular) throws RegistrierungsFormularException;
 
     /**
      * Versucht einen Benutzer einzuloggen.

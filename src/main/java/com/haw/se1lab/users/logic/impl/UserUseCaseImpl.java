@@ -1,14 +1,13 @@
 package com.haw.se1lab.users.logic.impl;
 
-import com.haw.se1lab.users.common.api.datatype.RegestrierungsFormular;
+import com.haw.se1lab.users.common.api.datatype.RegistrierungsFormular;
 import com.haw.se1lab.users.common.api.exception.IncorrectPasswordException;
-import com.haw.se1lab.users.common.api.exception.RegestrierungsFormularException;
+import com.haw.se1lab.users.common.api.exception.RegistrierungsFormularException;
 import com.haw.se1lab.users.common.api.exception.UserDoesntExistsException;
 import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
 import com.haw.se1lab.users.dataaccess.api.repo.BenutzerRepository;
 import com.haw.se1lab.users.logic.api.usecase.UserUseCase;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
@@ -21,18 +20,18 @@ public class UserUseCaseImpl implements UserUseCase {
     private BenutzerRepository benutzerRepository;
 
     @Override
-    public Benutzer createUser(RegestrierungsFormular formular) throws RegestrierungsFormularException {
+    public Benutzer createUser(RegistrierungsFormular formular) throws RegistrierungsFormularException {
         // check preconditions
         Assert.notNull(formular, "Parameter 'formular' must not be null!");
 
         if(!formular.getPassword().equals(formular.getPasswordConfirm())){
-            throw new RegestrierungsFormularException("Passwörter stimmen nicht überein.");
+            throw new RegistrierungsFormularException("Passwörter stimmen nicht überein.");
         }
         else if(formular.getBenutzerName().isEmpty()){
-            throw new RegestrierungsFormularException("Benutzername darf nicht leer sein.");
+            throw new RegistrierungsFormularException("Benutzername darf nicht leer sein.");
         }
         else if(benutzerRepository.existsByBenutzerName(formular.getBenutzerName())) {
-            throw new RegestrierungsFormularException("Benutzername existiert schon.");
+            throw new RegistrierungsFormularException("Benutzername existiert schon.");
         }
 
         Benutzer user = new Benutzer(formular.getBenutzerName(), formular.getPassword());
