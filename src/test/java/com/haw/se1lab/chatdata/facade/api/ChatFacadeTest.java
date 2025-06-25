@@ -58,15 +58,13 @@ public class ChatFacadeTest {
         benutzerRepository.save(user3);
         user4 = new Benutzer("user4", "4");
         benutzerRepository.save(user4);
-        chat1 = new Chat(user);
-        chat1.addTeilnehmer(user2);
+        chat1 = new Chat(user, user2);
         chatRepository.save(chat1);
-        chat2 = new Chat(user);
+        chat2 = new Chat(user, user2);
         chatRepository.save(chat2);
-        chat3 = new Chat(user3);
+        chat3 = new Chat(user3, user2);
         chatRepository.save(chat3);
-        chat4 = new Chat(user2);
-        chat4.addTeilnehmer(user3);
+        chat4 = new Chat(user2, user3);
         chatRepository.save(chat4);
 
     }

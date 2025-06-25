@@ -48,8 +48,7 @@ public class NachrichtenUseCaseTest {
         benutzerRepository.save(user);
         user2 = new Benutzer("user2", "2");
         benutzerRepository.save(user2);
-        chat = new Chat(user);
-        chat.addTeilnehmer(user2);
+        chat = new Chat(user, user2);
         chatRepository.save(chat);
     }
 

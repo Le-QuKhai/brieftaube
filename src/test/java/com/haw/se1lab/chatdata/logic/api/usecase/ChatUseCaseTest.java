@@ -47,8 +47,7 @@ public class ChatUseCaseTest
         admin2 = new Benutzer();
         benutzerRepository.save(admin2);
 
-        chat = new Chat(admin);
-        chat.addTeilnehmer(admin);
+        chat = new Chat(admin, admin);
         chatRepository.save(chat);
     }
 

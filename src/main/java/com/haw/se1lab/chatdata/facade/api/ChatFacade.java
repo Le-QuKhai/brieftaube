@@ -33,7 +33,7 @@ public interface ChatFacade
      * @param chat der Chat, der erstellt werden soll
      * @return den erstellten Chat.
      */
-    @PostMapping
+    @PostMapping("/create")
     @ResponseStatus(HttpStatus.OK) // defines the HTTP status of the returned HTTP response
     ResponseEntity<?> createChat(@RequestBody Chat chat);
 

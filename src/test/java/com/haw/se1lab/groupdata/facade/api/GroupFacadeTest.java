@@ -53,7 +53,7 @@ public class GroupFacadeTest
     {
         admin = new Benutzer();
         benutzerRepository.save(admin);
-        chat = new Chat(admin);
+        chat = new Chat(admin, admin);
         chatRepository.save(chat);
 
     }

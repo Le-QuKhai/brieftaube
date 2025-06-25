@@ -44,8 +44,7 @@ public class ChatRepositoryTest
         admin2 = new Benutzer();
         professorRepository.save(admin2);
 
-        chat = new Chat(admin);
-        chat.addTeilnehmer(admin2);
+        chat = new Chat(admin, admin2);
         chatRepository.save(chat);
     }
 
