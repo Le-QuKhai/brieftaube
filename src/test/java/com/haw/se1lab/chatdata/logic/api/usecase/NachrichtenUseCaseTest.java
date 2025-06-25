@@ -59,9 +59,6 @@ public class NachrichtenUseCaseTest {
         benutzerRepository.deleteAll();
     }
 
-
-
-
     @Test
     @Transactional
     public void createNachricht_Success() {
@@ -94,7 +91,6 @@ public class NachrichtenUseCaseTest {
 
         assertEquals(1, newMessages.size());
         assertEquals(savedNachricht2.getId(), newMessages.get(0).getId());
-
 
     }
 

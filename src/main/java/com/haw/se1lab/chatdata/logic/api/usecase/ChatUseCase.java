@@ -35,10 +35,10 @@ public interface ChatUseCase {
 
     /**
      * Gibt alle Chats zurück, in denen der übergebene User drinnen ist.
-     * @param userId die Id des Benutzers, für den man alle Chats holen soll
+     * @param userName die Id des Benutzers, für den man alle Chats holen soll
      * @return Liste von Chats, leere Liste, wenn er ihn keinen drinnen ist.
      */
-    List<Chat> getAllChatsByUser(Long userId);
+    List<Chat> getAllChatsByUser(String userName);
 
     /**
      * Gibt den Chat mit der übergebenen Id zurück
@@ -47,5 +47,5 @@ public interface ChatUseCase {
      */
     Chat getChat(Long chatId);
 
-    List<Chat> getNewChats(List<Long> chatIds, Long userId);
+    List<Chat> getNewChats(List<Long> chatIds, String userName);
 }

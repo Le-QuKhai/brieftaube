@@ -1,6 +1,7 @@
 package com.haw.se1lab.chatdata.facade.impl;
 
 import com.haw.se1lab.chatdata.common.api.datatype.ChatErstellung;
+import com.haw.se1lab.chatdata.common.api.datatype.ChatStatus;
 import com.haw.se1lab.chatdata.common.api.exception.ParticipantAlreadyExistsException;
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Chat;
 import com.haw.se1lab.chatdata.facade.api.ChatFacade;
@@ -61,11 +62,12 @@ public class ChatFacadeImpl implements ChatFacade {
      * @see ChatFacade
      */
     @Override
-    public ResponseEntity<?> getAllChatsByUser(Benutzer benutzer) {
-        if (benutzer == null) {
+    public ResponseEntity<?> getAllChatsByUser(String benutzerName) {
+        List<Chat> chats = chatUseCase.getAllChatsByUser(benutzerName);
+        if (chats == null) {
             return ResponseEntity.badRequest().body("Benutzer must not be null");
         } else {
-            return ResponseEntity.ok(chatUseCase.getAllChatsByUser(benutzer.getId()));
+            return ResponseEntity.ok().body(chats);
         }
     }
 
@@ -79,8 +81,8 @@ public class ChatFacadeImpl implements ChatFacade {
     }
 
     @Override
-    public ResponseEntity<?> getNewChats(List<Long> chatIds, Long userId) {
-        List<Chat> newChats = chatUseCase.getNewChats(chatIds, userId);
+    public ResponseEntity<?> getNewChats(ChatStatus  chatStatus) {
+        List<Chat> newChats = chatUseCase.getNewChats(chatStatus.getChatIds(), chatStatus.getBenutzerName());
         return ResponseEntity.ok(newChats);
     }
 

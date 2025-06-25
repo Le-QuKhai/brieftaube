@@ -29,19 +29,16 @@ public class ChatUseCaseImpl implements ChatUseCase {
     @Override
     public Chat createChat(ChatErstellung chatErstellung)
     {
-        Benutzer benutzer;
-        Benutzer teilnehmer;
-        try {
-            benutzer = benutzerRepository.findByBenutzerName(chatErstellung.getBenutzerName()).get();
-            teilnehmer = benutzerRepository.findByBenutzerName(chatErstellung.getTeilnehmerName()).get();
-        } catch (NoSuchElementException e) {
+        Optional<Benutzer> benutzer = benutzerRepository.findByBenutzerName(chatErstellung.getBenutzerName());
+        Optional<Benutzer> teilnehmer = benutzerRepository.findByBenutzerName(chatErstellung.getTeilnehmerName());
+        if (benutzer.isEmpty() || teilnehmer.isEmpty()) {
             return null;
         }
-        if (benutzer.equals(teilnehmer)) {
+        else if (benutzer.equals(teilnehmer)) {
             return null;
         }
         else {
-            Chat chat = new Chat(benutzer, teilnehmer);
+            Chat chat = new Chat(benutzer.get(), teilnehmer.get());
             return chatRepository.save(chat);
         }
     }
@@ -80,10 +77,15 @@ public class ChatUseCaseImpl implements ChatUseCase {
      * @see ChatUseCase
      */
     @Override
-    public List<Chat> getAllChatsByUser(Long userId) {
-        Optional<List<Chat>> chats = chatRepository.findMyChats(userId);
+    public List<Chat> getAllChatsByUser(String userName) {
+        Optional<Benutzer> user = benutzerRepository.findByBenutzerName(userName);
+        if (user.isPresent()) {
+            Optional<List<Chat>> chats = chatRepository.findMyChats(user.get().getId());
 
-        return chats.orElse(List.of());
+            return chats.orElse(List.of());
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -95,10 +97,12 @@ public class ChatUseCaseImpl implements ChatUseCase {
     }
 
     @Override
-    public List<Chat> getNewChats(List<Long> chatIds, Long userId) {
-        List<Chat> chats = getAllChatsByUser(userId);
+    public List<Chat> getNewChats(List<Long> chatIds, String userName) {
+
+        List<Chat> chats = getAllChatsByUser(userName);
         chats.removeIf(chat -> chatIds.contains(chat.getId()));
         return chats;
+
     }
 
 }

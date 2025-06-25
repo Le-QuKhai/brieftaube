@@ -2,6 +2,7 @@ package com.haw.se1lab.chatdata.facade.api;
 
 
 import com.haw.se1lab.chatdata.common.api.datatype.ChatErstellung;
+import com.haw.se1lab.chatdata.common.api.datatype.ChatStatus;
 import com.haw.se1lab.chatdata.common.api.exception.ParticipantAlreadyExistsException;
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Chat;
 import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
@@ -15,7 +16,8 @@ import java.util.List;
  * Die Rest-Schnittstelle, um von außen, mit dem Server zu kommunizieren.
  * Hierüber werden alle Sachen geregelt die mit Chats zutun haben.
  */
-@RequestMapping(path="/api/chat")
+@CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping(path="/api/chat", consumes = "application/json;charset=UTF-8")
 public interface ChatFacade
 {
     /**
@@ -41,12 +43,12 @@ public interface ChatFacade
 
     /**
      * Gibt alle Chats zurück, in denen der übergebene User drinnen ist.
-     * @param benutzer der Benutzer, für den man alle Chats holen soll
+     * @param benutzerName der Benutzer, für den man alle Chats holen soll
      * @return Liste von Chats, leere Liste, wenn er ihn keinen drinnen ist.
      */
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<?> getAllChatsByUser(@RequestBody Benutzer benutzer);
+    ResponseEntity<?> getAllChatsByUser(@RequestBody String benutzerName);
 
     /**
      * Gibt den Chat mit der übergebenen Id zurück
@@ -59,5 +61,5 @@ public interface ChatFacade
 
     @GetMapping("/get_new")
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<?> getNewChats(@RequestBody List<Long> chatIds, @RequestParam Long userId);
+    ResponseEntity<?> getNewChats(@RequestBody ChatStatus chatStatus);
 }

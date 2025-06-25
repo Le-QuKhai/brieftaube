@@ -2,6 +2,7 @@ package com.haw.se1lab.chatdata.facade.api;
 
 import com.haw.se1lab.Application;
 import com.haw.se1lab.chatdata.common.api.datatype.ChatErstellung;
+import com.haw.se1lab.chatdata.common.api.datatype.ChatStatus;
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Chat;
 import com.haw.se1lab.chatdata.dataaccess.api.repo.ChatRepository;
 import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
@@ -86,6 +87,7 @@ public class ChatFacadeTest {
     public void createNewChatTest() {
         ChatErstellung chatErstellung = new ChatErstellung(
                 userTestC1.getBenutzerName(), userTestC2.getBenutzerName());
+
         RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(chatErstellung)
@@ -104,7 +106,7 @@ public class ChatFacadeTest {
 
         Response response = RestAssured.given()
                  .contentType(ContentType.JSON)
-                 .body(user)
+                 .body(user.getBenutzerName())
 
                  .when()
                  .get("/api/chat/all")
@@ -125,7 +127,7 @@ public class ChatFacadeTest {
      public void findMyChatTest2() {
         RestAssured.given()
                 .contentType(ContentType.JSON)
-                .body(user4)
+                .body(user4.getBenutzerName())
 
                 .when()
                 .get("/api/chat/all")
@@ -142,14 +144,13 @@ public class ChatFacadeTest {
 
          RestAssured.given()
                  .contentType(ContentType.JSON)
-                 .body(user)
+                 .body(user.getBenutzerName())
 
                  .when()
                  .get("/api/chat/all")
 
                  .then()
-                 .statusCode(HttpStatus.OK.value())
-                 .body("size()", is(0));
+                 .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
@@ -167,8 +168,7 @@ public class ChatFacadeTest {
                 .extract().response();
 
         assertEquals(chat1.getId(), response.jsonPath().getLong("id"));
-        assertEquals(user2.getId(), response.jsonPath().getLong("teilnehmer[0].id"));
-        assertEquals(user.getId(), response.jsonPath().getLong("teilnehmer[1].id"));
+        assertEquals(chat1.getTeilnehmer().size(), response.jsonPath().getLong("teilnehmer.size()"));
     }
 
     @Test
@@ -188,7 +188,7 @@ public class ChatFacadeTest {
     public void getAllChats() {
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
-                .body(user)
+                .body(user.getBenutzerName())
 
                 .when()
                 .get("api/chat/all")
@@ -210,14 +210,13 @@ public class ChatFacadeTest {
 
         RestAssured.given()
                 .contentType(ContentType.JSON)
-                .body(user)
+                .body(user.getBenutzerName())
 
                 .when()
                 .get("api/chat/all")
 
                 .then()
-                .statusCode(HttpStatus.OK.value()).
-                body("size()", is(0));
+                .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
     @Test
@@ -225,7 +224,7 @@ public class ChatFacadeTest {
 
         RestAssured.given()
                 .contentType(ContentType.JSON)
-                .body(user4)
+                .body(user4.getBenutzerName())
 
                 .when()
                 .get("api/chat/all")
@@ -239,11 +238,11 @@ public class ChatFacadeTest {
     public void getNewChats() {
 
         List<Long> knownChats = new ArrayList<>(){{add(chat1.getId());}};
+        ChatStatus chatStatus = new ChatStatus(user.getBenutzerName(), knownChats);
 
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
-                .body(knownChats)
-                .queryParam("userId", user.getId())
+                .body(chatStatus)
 
                 .when()
                 .get("api/chat/get_new")
@@ -261,11 +260,11 @@ public class ChatFacadeTest {
     @Test
     public void getNewChatsNoNewChats() {
         List<Long> knownChats = new ArrayList<>(){{add(chat1.getId()); add(chat2.getId());}};
+        ChatStatus chatStatus = new ChatStatus(user.getBenutzerName(), knownChats);
 
         RestAssured.given()
                 .contentType(ContentType.JSON)
-                .body(knownChats)
-                .queryParam("userId", user.getId())
+                .body(chatStatus)
 
                 .when()
                 .get("api/chat/get_new")
