@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(value = "/api/user", consumes = "application/json;charset=UTF-8")
 public interface UserFacade {
 
-    @PostMapping
+    @PostMapping("/register")
     @ResponseStatus(HttpStatus.OK) // defines the HTTP status of the returned HTTP response
     ResponseEntity<?> createBenutzer(@RequestBody RegestrierungsFormular formular);
 
