@@ -29,6 +29,12 @@ public class Chat extends AbstractEntity
                 inverseJoinColumns = @JoinColumn(name = "participantId"))
     private Set<Benutzer> teilnehmer;
 
+    public Chat(Benutzer benutzer) {
+        nachrichten = new ArrayList<>();
+        teilnehmer = new HashSet<>();
+        addTeilnehmer(benutzer);
+    }
+
     public Chat(Benutzer benutzer, Benutzer andererBenutzer)
     {
         nachrichten = new ArrayList<>();

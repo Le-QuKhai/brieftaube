@@ -1,6 +1,7 @@
 package com.haw.se1lab.chatdata.facade.api;
 
 import com.haw.se1lab.Application;
+import com.haw.se1lab.chatdata.common.api.datatype.ChatErstellung;
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Chat;
 import com.haw.se1lab.chatdata.dataaccess.api.repo.ChatRepository;
 import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
@@ -41,6 +42,8 @@ public class ChatFacadeTest {
     private Benutzer user2;
     private Benutzer user3;
     private Benutzer user4;
+    Benutzer userTestC1;
+    Benutzer userTestC2;
     private Chat chat1;
     private Chat chat2;
     private Chat chat3;
@@ -49,7 +52,6 @@ public class ChatFacadeTest {
 
     @BeforeAll
     public void setUpAll() {
-
         user = new Benutzer("user1", "1");
         benutzerRepository.save(user);
         user2 = new Benutzer("user2", "2");
@@ -58,15 +60,20 @@ public class ChatFacadeTest {
         benutzerRepository.save(user3);
         user4 = new Benutzer("user4", "4");
         benutzerRepository.save(user4);
+
+        userTestC1 = new Benutzer("userTestC1", "c1");
+        userTestC2 = new Benutzer("userTestC2", "c2");
+        benutzerRepository.save(userTestC1);
+        benutzerRepository.save(userTestC2);
+
         chat1 = new Chat(user, user2);
         chatRepository.save(chat1);
-        chat2 = new Chat(user, user2);
+        chat2 = new Chat(user);
         chatRepository.save(chat2);
-        chat3 = new Chat(user3, user2);
+        chat3 = new Chat(user3);
         chatRepository.save(chat3);
-        chat4 = new Chat(user2, user3);
+        chat4 = new Chat(user2);
         chatRepository.save(chat4);
-
     }
 
     @AfterAll
@@ -75,7 +82,24 @@ public class ChatFacadeTest {
         benutzerRepository.deleteAll();
     }
 
-     @Test
+
+    @Test
+    public void createNewChatTest() {
+        ChatErstellung chatErstellung = new ChatErstellung(userTestC1, userTestC2);
+        RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(chatErstellung)
+
+                .when()
+                .post("/api/chat/create")
+
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .body("teilnehmer.size()", is(2));
+    }
+
+
+    @Test
     public void findMyChatTest() {
 
         Response response = RestAssured.given()
@@ -95,6 +119,7 @@ public class ChatFacadeTest {
         assertEquals(chat1.getId(), response.jsonPath().getLong("[0].id"));
         assertEquals(chat2.getId(), response.jsonPath().getLong("[1].id"));
      }
+
 
      @Test
      public void findMyChatTest2() {
@@ -221,7 +246,7 @@ public class ChatFacadeTest {
                 .queryParam("userId", user.getId())
 
                 .when()
-                .get("api/chat/new")
+                .get("api/chat/get_new")
 
                 .then()
                 .statusCode(HttpStatus.OK.value())
@@ -243,7 +268,7 @@ public class ChatFacadeTest {
                 .queryParam("userId", user.getId())
 
                 .when()
-                .get("api/chat/new")
+                .get("api/chat/get_new")
 
                 .then()
                 .statusCode(HttpStatus.OK.value())

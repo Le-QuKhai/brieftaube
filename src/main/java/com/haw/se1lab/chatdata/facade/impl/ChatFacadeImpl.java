@@ -1,5 +1,6 @@
 package com.haw.se1lab.chatdata.facade.impl;
 
+import com.haw.se1lab.chatdata.common.api.datatype.ChatErstellung;
 import com.haw.se1lab.chatdata.common.api.exception.ParticipantAlreadyExistsException;
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Chat;
 import com.haw.se1lab.chatdata.facade.api.ChatFacade;
@@ -47,11 +48,11 @@ public class ChatFacadeImpl implements ChatFacade {
      * @see ChatFacade
      */
     @Override
-    public ResponseEntity<?> createChat(Chat chat) {
-        if (chatUseCase.checkIfChatExists(chat)) {
-            return ResponseEntity.badRequest().body("Chat already exists");
+    public ResponseEntity<?> createChat(ChatErstellung chatErstellung) {
+        Chat chat1 = chatUseCase.createChat(chatErstellung.getBenutzer(), chatErstellung.getTeilnehmer());
+        if (chat1 == null) {
+            return ResponseEntity.badRequest().body("Chat could not be created. User doesn't exist");
         } else {
-            Chat chat1 = chatUseCase.createChat(chat);
             return ResponseEntity.ok(chat1);
         }
     }

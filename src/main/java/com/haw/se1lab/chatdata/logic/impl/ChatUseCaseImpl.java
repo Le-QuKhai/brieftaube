@@ -4,6 +4,7 @@ import com.haw.se1lab.chatdata.dataaccess.api.entity.Chat;
 import com.haw.se1lab.chatdata.dataaccess.api.repo.ChatRepository;
 import com.haw.se1lab.chatdata.logic.api.usecase.ChatUseCase;
 import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
+import com.haw.se1lab.users.dataaccess.api.repo.BenutzerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -17,17 +18,23 @@ public class ChatUseCaseImpl implements ChatUseCase {
     @Autowired
     private ChatRepository chatRepository;
 
+    @Autowired
+    private BenutzerRepository benutzerRepository;
+
     /**
      * @see ChatUseCase
      */
     @Override
-    public Chat createChat(Chat chat)
+    public Chat createChat(Benutzer benutzer, Benutzer teilnehmer)
     {
-        Assert.notNull(chat, "chat must not be null");
-        if (checkIfChatExists(chat)) {
+        if (benutzer.equals(teilnehmer)) {
+            return null;
+        } else if (!benutzerRepository.existsByBenutzerName(benutzer.getBenutzerName()) ||
+                    !benutzerRepository.existsByBenutzerName(teilnehmer.getBenutzerName())) {
             return null;
         }
         else {
+            Chat chat = new Chat(benutzer, teilnehmer);
             return chatRepository.save(chat);
         }
     }

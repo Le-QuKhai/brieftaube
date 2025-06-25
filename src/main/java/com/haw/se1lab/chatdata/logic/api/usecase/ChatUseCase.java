@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ChatUseCase {
 
-    Chat createChat(Chat chat);
+    Chat createChat(Benutzer benutzer, Benutzer teilnehmer);
 
     /**
      * Fügt einen Benutzer zu einem Chat hinzu

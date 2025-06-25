@@ -1,6 +1,7 @@
 package com.haw.se1lab.chatdata.facade.api;
 
 
+import com.haw.se1lab.chatdata.common.api.datatype.ChatErstellung;
 import com.haw.se1lab.chatdata.common.api.exception.ParticipantAlreadyExistsException;
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Chat;
 import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
@@ -30,12 +31,13 @@ public interface ChatFacade
 
     /**
      * Erstellt einen Chat und speichert ihn in der Datenbank
-     * @param chat der Chat, der erstellt werden soll
+     * @param chatErstellung enthaelt den Benutzer, der den Chat erstellt
+     * und den Teilnehmer, mit dem der Benutzer einen Chat eröffnet
      * @return den erstellten Chat.
      */
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.OK) // defines the HTTP status of the returned HTTP response
-    ResponseEntity<?> createChat(@RequestBody Chat chat);
+    ResponseEntity<?> createChat(@RequestBody ChatErstellung chatErstellung);
 
     /**
      * Gibt alle Chats zurück, in denen der übergebene User drinnen ist.
