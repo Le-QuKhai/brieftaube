@@ -1,0 +1,47 @@
+# brieftaube/Dockerfile.proxy
+
+# --- Stage 1: Build the frontend (using Node.js) ---
+FROM node:18-alpine AS frontend-builder
+
+WORKDIR /app/frontend
+
+# Copy package.json and package-lock.json first to leverage Docker cache
+COPY ./pigeonhole_frontend/package.json ./
+COPY ./pigeonhole_frontend/package-lock.json ./
+
+RUN npm install --frozen-lockfile # Install dependencies
+
+# Copy the rest of the frontend source code
+COPY ./pigeonhole_frontend/ .
+
+# Build the frontend application
+# This command will typically generate the static files into a 'dist' or 'build' directory
+RUN npm run build
+
+
+# --- Stage 2: Build the Nginx proxy image ---
+FROM nginx:alpine
+
+# Remove the default Nginx configuration.
+# This is crucial because the logs showed it was still being enabled.
+# Your brieftaube.conf will take its place.
+RUN rm /etc/nginx/conf.d/default.conf
+
+# Copy your custom Nginx configuration file.
+# The 'brieftaube.conf' file is expected to be in the same directory as 'Dockerfile.proxy'
+# (i.e., in the 'brieftaube/' root directory).
+# It will be copied INTO the container at this path.
+COPY brieftaube.conf /etc/nginx/conf.d/brieftaube.conf
+
+# Copy the built frontend static files from the 'frontend-builder' stage.
+# IMPORTANT: Adjust '/app/frontend/dist' if your build command (npm run build)
+# outputs files to a different directory (e.g., '/app/frontend/build').
+# These files will be placed in '/usr/share/nginx/html' inside the Nginx container,
+# which is the default root for Nginx static files.
+COPY --from=frontend-builder /app/frontend/dist /usr/share/nginx/html
+
+# Expose port 80. While docker-compose handles port mapping, it's good practice.
+EXPOSE 80
+
+# The default CMD for nginx:alpine will start Nginx.
+# No need to specify CMD unless you have custom startup scripts.
