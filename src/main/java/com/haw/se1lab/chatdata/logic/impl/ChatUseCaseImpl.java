@@ -1,5 +1,6 @@
 package com.haw.se1lab.chatdata.logic.impl;
 
+import com.haw.se1lab.chatdata.common.api.datatype.ChatErstellung;
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Chat;
 import com.haw.se1lab.chatdata.dataaccess.api.repo.ChatRepository;
 import com.haw.se1lab.chatdata.logic.api.usecase.ChatUseCase;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 @Component
@@ -25,12 +27,17 @@ public class ChatUseCaseImpl implements ChatUseCase {
      * @see ChatUseCase
      */
     @Override
-    public Chat createChat(Benutzer benutzer, Benutzer teilnehmer)
+    public Chat createChat(ChatErstellung chatErstellung)
     {
-        if (benutzer.equals(teilnehmer)) {
+        Benutzer benutzer;
+        Benutzer teilnehmer;
+        try {
+            benutzer = benutzerRepository.findByBenutzerName(chatErstellung.getBenutzerName()).get();
+            teilnehmer = benutzerRepository.findByBenutzerName(chatErstellung.getTeilnehmerName()).get();
+        } catch (NoSuchElementException e) {
             return null;
-        } else if (!benutzerRepository.existsByBenutzerName(benutzer.getBenutzerName()) ||
-                    !benutzerRepository.existsByBenutzerName(teilnehmer.getBenutzerName())) {
+        }
+        if (benutzer.equals(teilnehmer)) {
             return null;
         }
         else {

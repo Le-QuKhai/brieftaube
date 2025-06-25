@@ -10,6 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class ChatErstellung {
 
-    private Benutzer benutzer;
-    private Benutzer teilnehmer;
+    private String benutzerName;
+    private String teilnehmerName;
 }

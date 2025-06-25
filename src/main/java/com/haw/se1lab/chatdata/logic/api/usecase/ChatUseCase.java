@@ -1,5 +1,6 @@
 package com.haw.se1lab.chatdata.logic.api.usecase;
 
+import com.haw.se1lab.chatdata.common.api.datatype.ChatErstellung;
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Chat;
 import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
 
@@ -7,7 +8,7 @@ import java.util.List;
 
 public interface ChatUseCase {
 
-    Chat createChat(Benutzer benutzer, Benutzer teilnehmer);
+    Chat createChat(ChatErstellung chatErstellung);
 
     /**
      * Fügt einen Benutzer zu einem Chat hinzu

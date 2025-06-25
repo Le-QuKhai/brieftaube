@@ -49,9 +49,9 @@ public class ChatFacadeImpl implements ChatFacade {
      */
     @Override
     public ResponseEntity<?> createChat(ChatErstellung chatErstellung) {
-        Chat chat1 = chatUseCase.createChat(chatErstellung.getBenutzer(), chatErstellung.getTeilnehmer());
+        Chat chat1 = chatUseCase.createChat(chatErstellung);
         if (chat1 == null) {
-            return ResponseEntity.badRequest().body("Chat could not be created. User doesn't exist");
+            return ResponseEntity.badRequest().body("Chat could not be created. User doesn't exist.");
         } else {
             return ResponseEntity.ok(chat1);
         }

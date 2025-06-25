@@ -84,7 +84,8 @@ public class ChatFacadeTest {
 
     @Test
     public void createNewChatTest() {
-        ChatErstellung chatErstellung = new ChatErstellung(userTestC1, userTestC2);
+        ChatErstellung chatErstellung = new ChatErstellung(
+                userTestC1.getBenutzerName(), userTestC2.getBenutzerName());
         RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(chatErstellung)
