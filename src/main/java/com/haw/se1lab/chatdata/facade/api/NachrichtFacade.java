@@ -9,7 +9,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping(path = "/message")
+@RestController
+@CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping(path = "/message", consumes = "application/json;charset=UTF-8")
 public interface NachrichtFacade {
 
     /**

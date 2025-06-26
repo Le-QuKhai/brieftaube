@@ -53,7 +53,6 @@ public class ChatUseCaseImpl implements ChatUseCase {
         Assert.notNull(teilnehmer, "Teilnehmer must not be null");
         chat.addTeilnehmer(teilnehmer);
         chatRepository.save(chat);
-
     }
 
     /**
@@ -104,5 +103,4 @@ public class ChatUseCaseImpl implements ChatUseCase {
         return chats;
 
     }
-
 }

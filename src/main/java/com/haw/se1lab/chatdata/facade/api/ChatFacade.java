@@ -48,7 +48,7 @@ public interface ChatFacade
      */
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
-    ResponseEntity<?> getAllChatsByUser(@RequestBody String benutzerName);
+    ResponseEntity<?> getAllChatsByUser(@RequestParam String benutzerName);
 
     /**
      * Gibt den Chat mit der übergebenen Id zurück
