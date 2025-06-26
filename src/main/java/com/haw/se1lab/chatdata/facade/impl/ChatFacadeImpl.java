@@ -13,14 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @Component
 @RestController
-@RequestMapping(path="/api/chat", consumes = "application/json;charset=UTF-8")
 public class ChatFacadeImpl implements ChatFacade {
 
     @Autowired
@@ -65,13 +63,14 @@ public class ChatFacadeImpl implements ChatFacade {
      */
     @Override
     public ResponseEntity<?> getAllChatsByUser(String benutzerName) {
-        List<Chat> chats = chatUseCase.getAllChatsByUser(benutzerName);
-        if (chats == null) {
-            return ResponseEntity.badRequest().body("Benutzer must not be null");
-        } else {
-            return ResponseEntity.ok().body(chats);
+        if (benutzerName == null || benutzerName.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("Benutzername must not be null or empty");
         }
+
+        List<Chat> chats = chatUseCase.getAllChatsByUser(benutzerName);
+        return ResponseEntity.ok(chats); // return empty list if user has no chats
     }
+
 
     /**
      * @see ChatFacade

@@ -1,4 +1,3 @@
-
 package com.haw.se1lab.config;
 
 import org.springframework.context.annotation.Bean;
