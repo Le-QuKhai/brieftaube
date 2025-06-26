@@ -84,7 +84,7 @@ public class ChatUseCaseImpl implements ChatUseCase {
 
             return chats.orElse(List.of());
         } else {
-            return null;
+            return List.of();
         }
     }
 

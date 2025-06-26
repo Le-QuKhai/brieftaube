@@ -63,13 +63,14 @@ public class ChatFacadeImpl implements ChatFacade {
      */
     @Override
     public ResponseEntity<?> getAllChatsByUser(String benutzerName) {
-        List<Chat> chats = chatUseCase.getAllChatsByUser(benutzerName);
-        if (chats == null) {
-            return ResponseEntity.badRequest().body("Benutzer must not be null");
-        } else {
-            return ResponseEntity.ok().body(chats);
+        if (benutzerName == null || benutzerName.trim().isEmpty()) {
+            return ResponseEntity.badRequest().body("Benutzername must not be null or empty");
         }
+
+        List<Chat> chats = chatUseCase.getAllChatsByUser(benutzerName);
+        return ResponseEntity.ok(chats); // return empty list if user has no chats
     }
+
 
     /**
      * @see ChatFacade
