@@ -1,5 +1,6 @@
 package com.haw.se1lab.chatdata.facade.api;
 
+import com.haw.se1lab.chatdata.common.api.datatype.NachrichtErstellung;
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Chat;
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Nachricht;
 import org.springframework.http.HttpStatus;
@@ -13,13 +14,13 @@ public interface NachrichtFacade {
 
     /**
      * Erstellt eine Nachricht, in den übergebenen Chat
-     * @param nachricht die Nachricht, die erstellt werden soll
-     * @param chat der Chat, in den die Nachricht geschrieben worden ist
+     * @param nachrichtErstellung enthält die Nachricht, die erstellt werden soll und
+     * die ChatID, des Chats, in den die Nachricht geschrieben worden ist
      * @return die erstellte Nachricht
      */
     @PostMapping("/create_new")
     @ResponseStatus(HttpStatus.OK) // defines the HTTP status of the returned HTTP response
-    ResponseEntity<?> createNachricht(@RequestBody Nachricht nachricht, Chat chat);
+    ResponseEntity<?> createNachricht(@RequestBody NachrichtErstellung nachrichtErstellung);
 
 
     /**

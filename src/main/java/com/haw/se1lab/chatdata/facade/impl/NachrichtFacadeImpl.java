@@ -1,5 +1,6 @@
 package com.haw.se1lab.chatdata.facade.impl;
 
+import com.haw.se1lab.chatdata.common.api.datatype.NachrichtErstellung;
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Chat;
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Nachricht;
 import com.haw.se1lab.chatdata.facade.api.ChatFacade;
@@ -25,8 +26,9 @@ public class NachrichtFacadeImpl implements NachrichtFacade {
      * @see NachrichtFacade
      */
     @Override
-    public ResponseEntity<?> createNachricht(Nachricht nachricht, Chat chat) {
-        Nachricht n = nachrichtUseCase.createNachricht(nachricht, chat);
+    public ResponseEntity<?> createNachricht(NachrichtErstellung nachrichtErstellung) {
+
+        Nachricht n = nachrichtUseCase.createNachricht(nachrichtErstellung);
         if (n == null) {
             return ResponseEntity.badRequest().body("Chat doesn't exist or Message Sender not in Chat");
         }

@@ -1,6 +1,7 @@
 package com.haw.se1lab.chatdata.logic.api.usecase;
 
 import com.haw.se1lab.Application;
+import com.haw.se1lab.chatdata.common.api.datatype.NachrichtErstellung;
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Chat;
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Nachricht;
 import com.haw.se1lab.chatdata.dataaccess.api.repo.ChatRepository;
@@ -62,9 +63,9 @@ public class NachrichtenUseCaseTest {
     @Test
     @Transactional
     public void createNachricht_Success() {
-        Date date = new Date();
-        Nachricht nachricht = new Nachricht("Hallo", date, user);
-        Nachricht savedNachricht = nachrichtUseCase.createNachricht(nachricht, chat);
+        NachrichtErstellung nachrichtErstellung = new NachrichtErstellung(
+                "Hallo", chat.getId(), user.getBenutzerName());
+        Nachricht savedNachricht = nachrichtUseCase.createNachricht(nachrichtErstellung);
 
         assertNotNull(savedNachricht);
         Optional<List<Nachricht>> nachrichtenOptional = nachrichtRepository.findBySender(user);
@@ -80,12 +81,13 @@ public class NachrichtenUseCaseTest {
     @Test
     @Transactional
     public void getNewMessagesTest() {
-        Date date = new Date();
-        Nachricht nachricht1 = new Nachricht("Hallo", date, user);
-        Nachricht savedNachricht1 = nachrichtUseCase.createNachricht(nachricht1, chat);
+        NachrichtErstellung nachrichtErstellung1 = new NachrichtErstellung(
+                "Hallo", chat.getId(), user.getBenutzerName());
+        Nachricht savedNachricht1 = nachrichtUseCase.createNachricht(nachrichtErstellung1);
 
-        Nachricht nachricht2 = new Nachricht("Hey", date, user2);
-        Nachricht savedNachricht2 = nachrichtUseCase.createNachricht(nachricht2, chat);
+        NachrichtErstellung nachrichtErstellung2 = new NachrichtErstellung(
+                "Hey", chat.getId(), user2.getBenutzerName());
+        Nachricht savedNachricht2 = nachrichtUseCase.createNachricht(nachrichtErstellung2);
 
         List<Nachricht> newMessages = nachrichtUseCase.getNewMessages(chat.getId(), savedNachricht1.getId());
 
