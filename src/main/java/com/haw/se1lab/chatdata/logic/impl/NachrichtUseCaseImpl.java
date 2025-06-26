@@ -38,7 +38,7 @@ public class NachrichtUseCaseImpl implements NachrichtUseCase {
     public Nachricht createNachricht(NachrichtErstellung nachrichtErstellung) {
         // Nachricht darf noch nicht existieren | Chat muss schon existieren
         Date date = new Date();
-        Optional<Chat> chat = chatRepository.findById(nachrichtErstellung.getChatID());
+        Optional<Chat> chat = chatRepository.findById(nachrichtErstellung.getChatId());
         Optional<Benutzer> sender = benutzerRepository.findByBenutzerName(nachrichtErstellung.getSenderName());
         if (sender.isPresent()) {
             Nachricht nachricht = new Nachricht(nachrichtErstellung.getNachricht(), date, sender.get());

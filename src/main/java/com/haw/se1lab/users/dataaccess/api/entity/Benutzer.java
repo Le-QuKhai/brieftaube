@@ -26,4 +26,17 @@ public class Benutzer extends AbstractEntity
         this.benutzerName = benutzername;
         this.password = password;
     }
+
+    @Override
+    public boolean equals(Object any){
+       if(any instanceof Benutzer other){
+            return this.getId().equals(other.getId());
+       }
+       return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getId().hashCode();
+    }
 }

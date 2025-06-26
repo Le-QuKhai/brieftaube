@@ -9,6 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class NachrichtErstellung {
     private String nachricht;
-    private Long chatID;
+    private Long chatId;
     private String senderName;
 }
