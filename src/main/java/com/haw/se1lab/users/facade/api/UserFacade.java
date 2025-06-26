@@ -7,7 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping(value = "/api/user", consumes = "application/json;charset=UTF-8")
+@RequestMapping(value = "/api/user")
 public interface UserFacade {
 
     @PostMapping("/register")

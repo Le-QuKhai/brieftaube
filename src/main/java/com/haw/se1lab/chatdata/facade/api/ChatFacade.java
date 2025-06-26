@@ -17,7 +17,7 @@ import java.util.List;
  * Hierüber werden alle Sachen geregelt die mit Chats zutun haben.
  */
 @CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping(path="/api/chat", consumes = "application/json;charset=UTF-8")
+@RequestMapping(path="/api/chat")
 public interface ChatFacade
 {
     /**
@@ -49,6 +49,11 @@ public interface ChatFacade
     @GetMapping("/all")
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<?> getAllChatsByUser(@RequestParam String benutzerName);
+
+
+ @GetMapping("/get_msgs")
+ @ResponseStatus(HttpStatus.OK)
+ ResponseEntity<?> getAllMesgsByChatId(@RequestParam Long chatId);
 
     /**
      * Gibt den Chat mit der übergebenen Id zurück

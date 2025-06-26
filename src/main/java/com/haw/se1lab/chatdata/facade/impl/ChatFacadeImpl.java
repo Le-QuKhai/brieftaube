@@ -4,6 +4,7 @@ import com.haw.se1lab.chatdata.common.api.datatype.ChatErstellung;
 import com.haw.se1lab.chatdata.common.api.datatype.ChatStatus;
 import com.haw.se1lab.chatdata.common.api.exception.ParticipantAlreadyExistsException;
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Chat;
+import com.haw.se1lab.chatdata.dataaccess.api.entity.Nachricht;
 import com.haw.se1lab.chatdata.facade.api.ChatFacade;
 import com.haw.se1lab.chatdata.logic.api.usecase.ChatUseCase;
 import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
@@ -69,6 +70,15 @@ public class ChatFacadeImpl implements ChatFacade {
 
         List<Chat> chats = chatUseCase.getAllChatsByUser(benutzerName);
         return ResponseEntity.ok(chats); // return empty list if user has no chats
+    }
+
+    @Override
+    public ResponseEntity<?> getAllMesgsByChatId(Long chatId) {
+        List<Nachricht> nachrichten = chatUseCase.getAllMesgsByChatId(chatId);
+        if (nachrichten != null) {
+            return ResponseEntity.ok(nachrichten);
+        }
+        return ResponseEntity.badRequest().body("Chat not found");
     }
 
 

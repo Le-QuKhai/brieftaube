@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:4200")
-@RequestMapping(path = "/message", consumes = "application/json;charset=UTF-8")
+@RequestMapping(path = "/message")
 public interface NachrichtFacade {
 
     /**

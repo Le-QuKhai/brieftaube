@@ -2,6 +2,7 @@ package com.haw.se1lab.chatdata.logic.impl;
 
 import com.haw.se1lab.chatdata.common.api.datatype.ChatErstellung;
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Chat;
+import com.haw.se1lab.chatdata.dataaccess.api.entity.Nachricht;
 import com.haw.se1lab.chatdata.dataaccess.api.repo.ChatRepository;
 import com.haw.se1lab.chatdata.logic.api.usecase.ChatUseCase;
 import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
@@ -102,5 +103,12 @@ public class ChatUseCaseImpl implements ChatUseCase {
         chats.removeIf(chat -> chatIds.contains(chat.getId()));
         return chats;
 
+    }
+
+    @Override
+    public List<Nachricht> getAllMesgsByChatId(Long chatId) {
+        Optional<Chat> chat = chatRepository.findById(chatId);
+
+        return chat.map(Chat::getNachrichten).orElse(null);
     }
 }
