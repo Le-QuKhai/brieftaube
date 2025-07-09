@@ -1,6 +1,5 @@
 package com.haw.se1lab.chatdata.dataaccess.api.entity;
 
-import com.haw.se1lab.chatdata.common.api.exception.MessageInvalidException;
 import com.haw.se1lab.general.dataaccess.api.entity.AbstractEntity;
 import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
 import jakarta.persistence.Embeddable;

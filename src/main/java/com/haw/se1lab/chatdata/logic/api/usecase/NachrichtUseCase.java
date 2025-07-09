@@ -1,10 +1,7 @@
 package com.haw.se1lab.chatdata.logic.api.usecase;
 
 import com.haw.se1lab.chatdata.common.api.datatype.NachrichtErstellung;
-import com.haw.se1lab.chatdata.dataaccess.api.entity.Chat;
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Nachricht;
-
-import java.util.List;
 
 public interface NachrichtUseCase {
 
@@ -17,17 +14,9 @@ public interface NachrichtUseCase {
     Nachricht createNachricht(NachrichtErstellung nachrichtErstellung);
 
     /**
-     * Überprüft, ob eine Nachricht schon existiert.
-     * @param nachricht die Nachricht, die überprüft werden soll.
+     * Überprüft, ob eine Nachricht anhand der Id schon existiert.
+     * @param nachrichtId die Nachricht, die überprüft werden soll.
      * @return true, wenn sie existiert. False, wenn nicht.
      */
-    boolean checkIfNachrichtExists(Nachricht nachricht);
-
-    /**
-     * Gibt alle neuen Nachrichten zurück, die seit der letzten Nachricht geschrieben wurden.
-     * @param chatId die Id des Chats
-     * @param lastMessageId die Id der letzten Nachricht
-     * @return Liste von Nachrichten, leere Liste, wenn es keine neuen Nachrichten gibt.
-     */
-    List<Nachricht> getNewMessages(Long chatId, Long lastMessageId);
+    boolean checkIfNachrichtExistsById(Long nachrichtId);
 }

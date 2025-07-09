@@ -19,6 +19,9 @@ public class UserUseCaseImpl implements UserUseCase {
     @Autowired
     private BenutzerRepository benutzerRepository;
 
+    /**
+     * @see UserUseCase
+     */
     @Override
     public Benutzer createUser(RegistrierungsFormular formular) throws RegistrierungsFormularException {
         // check preconditions
@@ -35,18 +38,18 @@ public class UserUseCaseImpl implements UserUseCase {
         }
 
         Benutzer user = new Benutzer(formular.getBenutzerName(), formular.getPassword());
-
         // store entity in DB (from then on: entity object is observed by Hibernate within current transaction)
         return benutzerRepository.save(user);
     }
 
+    /**
+     * @see UserUseCase
+     */
     @Override
     public Benutzer loginBenutzer(Benutzer benutzer) throws IncorrectPasswordException, UserDoesntExistsException {
-
         Optional<Benutzer> dataBaseBenutzer = benutzerRepository.findByBenutzerName(benutzer.getBenutzerName());
 
         if(dataBaseBenutzer.isPresent()){
-
             if(dataBaseBenutzer.get().getPassword().equals(benutzer.getPassword())){
                 return dataBaseBenutzer.get();
             }
@@ -59,6 +62,9 @@ public class UserUseCaseImpl implements UserUseCase {
         }
     }
 
+    /**
+     * @see UserUseCase
+     */
     @Override
     public boolean checkIfUserExists(Long userId) {
         return benutzerRepository.findById(userId).isPresent();

@@ -22,6 +22,10 @@ public class UserFacadeImpl implements UserFacade {
     @Autowired
     private UserUseCase userUseCase;
 
+    /**
+     * @see UserFacade
+     */
+    @Override
     public ResponseEntity<?> createBenutzer(RegistrierungsFormular formular){
         try {
             Benutzer benutzer = userUseCase.createUser(formular);
@@ -32,6 +36,10 @@ public class UserFacadeImpl implements UserFacade {
         }
     }
 
+    /**
+     * @see UserFacade
+     */
+    @Override
     public ResponseEntity<?> loginBenutzer(Benutzer benutzer) {
         try {
             Benutzer dataBaseBenutzer = userUseCase.loginBenutzer(benutzer);
@@ -42,6 +50,10 @@ public class UserFacadeImpl implements UserFacade {
         }
     }
 
+    /**
+     * @see UserFacade
+     */
+    @Override
     public ResponseEntity<?> checkIfUserExists(Long userId) {
         if(userUseCase.checkIfUserExists(userId)) {
             return ResponseEntity.ok(true);

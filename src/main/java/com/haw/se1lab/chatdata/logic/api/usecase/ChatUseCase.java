@@ -15,7 +15,6 @@ public interface ChatUseCase {
      * Fügt einen Benutzer zu einem Chat hinzu
      * @param chat der Chat wo der Benutzer hinzugefügt werden soll
      * @param teilnehmer der Benutzer der hinzugefügt werden soll
-     * @return der hinzugefügt Benutzer
      */
     void addParticipant(Chat chat, Benutzer teilnehmer);
 
@@ -48,7 +47,27 @@ public interface ChatUseCase {
      */
     Chat getChat(Long chatId);
 
+    /**
+     * Gibt alle Chats zurück, die der Benutzer in der Datenbank hat, die nicht Teil der übergebenen Liste
+     * von ChatIds ist.
+     * @param chatIds - Liste von Ids von Chats, die nicht zurückgegeben werden sollen
+     * @param userName - Benutzername des Benutzers
+     * @return alle Chats, die der Benutzer hat, die nicht Teil der Liste von ChatIds ist.
+     */
     List<Chat> getNewChats(List<Long> chatIds, String userName);
 
+    /**
+     * Gibt alle neuen Nachrichten zurück, die seit der letzten Nachricht geschrieben wurden.
+     * @param chatId die Id des Chats
+     * @param lastMessageId die Id der letzten Nachricht
+     * @return Liste von Nachrichten, leere Liste, wenn es keine neuen Nachrichten gibt.
+     */
+    List<Nachricht> getNewMessages(Long chatId, Long lastMessageId);
+
+    /**
+     * Gibt alle Nachrichten aus einem Chat, anhand der ChatId, zurück.
+     * @param chatId - Id des Chats
+     * @return alle Nachrichten aus dem Chat
+     */
     List<Nachricht> getAllMesgsByChatId(Long chatId);
 }

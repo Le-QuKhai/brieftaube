@@ -8,6 +8,13 @@ import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
 
 public interface UserUseCase {
 
+    /**
+     * Registriert einen Benutzer.
+     * Falls erfolgreich, wird der Benutzer und Passwort in der Datenbank gespeichert.
+     * @param formular - Registrierungsformular, enthält Benutzername, Passwort und das wiederholte Passwort.
+     * @return Benutzer, wenn die Registrierung erfolgreich war
+     * @throws RegistrierungsFormularException falls die Registrierung nicht erfolgreich war.
+     */
     Benutzer createUser(RegistrierungsFormular formular) throws RegistrierungsFormularException;
 
     /**
@@ -19,5 +26,10 @@ public interface UserUseCase {
      */
     Benutzer loginBenutzer(Benutzer benutzer) throws IncorrectPasswordException, UserDoesntExistsException;
 
+    /**
+     * Prüft, ob ein Benutzer, anhand der Benutzer ID, in der Datenbank enthalten ist.
+     * @param userId - Id des Benutzers
+     * @return true, wenn der Benutzer in der Datenbank ist. false, wenn nicht.
+     */
     boolean checkIfUserExists(Long userId);
 }

@@ -1,19 +1,19 @@
 package com.haw.se1lab.chatdata.logic.impl;
 
 import com.haw.se1lab.chatdata.common.api.datatype.ChatErstellung;
+import com.haw.se1lab.chatdata.common.api.exception.ChatDontExistsException;
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Chat;
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Nachricht;
 import com.haw.se1lab.chatdata.dataaccess.api.repo.ChatRepository;
 import com.haw.se1lab.chatdata.logic.api.usecase.ChatUseCase;
+import com.haw.se1lab.chatdata.logic.api.usecase.NachrichtUseCase;
 import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
 import com.haw.se1lab.users.dataaccess.api.repo.BenutzerRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 public class ChatUseCaseImpl implements ChatUseCase {
@@ -23,6 +23,8 @@ public class ChatUseCaseImpl implements ChatUseCase {
 
     @Autowired
     private BenutzerRepository benutzerRepository;
+    @Autowired
+    private NachrichtUseCase nachrichtUseCase;
 
     /**
      * @see ChatUseCase
@@ -69,7 +71,6 @@ public class ChatUseCaseImpl implements ChatUseCase {
      */
     @Override
     public boolean checkIfChatExists(Chat chat) {
-        // TODO test if query returns 1 or 0
         return chatRepository.checkIfChatExists(chat.getId()).get() == 1;
     }
 
@@ -96,13 +97,42 @@ public class ChatUseCaseImpl implements ChatUseCase {
         return chatRepository.findById(chatId).orElse(null);
     }
 
+    /**
+     * @see ChatUseCase
+     */
     @Override
     public List<Chat> getNewChats(List<Long> chatIds, String userName) {
 
         List<Chat> chats = getAllChatsByUser(userName);
         chats.removeIf(chat -> chatIds.contains(chat.getId()));
         return chats;
+    }
 
+    /**
+     * @see ChatUseCase
+     */
+    @Override
+    public List<Nachricht> getNewMessages(Long chatId, Long lastMessageId) {
+        Optional<Chat> optionalChat = chatRepository.findById(chatId);
+        Chat chat;
+        if(optionalChat.isPresent()) {
+            chat = optionalChat.get();
+        }
+        else{
+            throw new ChatDontExistsException("Chat with id " + chatId + " doesn't exist");
+        }
+        List<Nachricht> messages = chat.getNachrichten();
+        List<Nachricht> newMessages = new ArrayList<>();
+
+        for(int i = messages.size() - 1; i >= 0; i--) {
+            Nachricht message = messages.get(i);
+            if(Objects.equals(message.getId(), lastMessageId)) {
+                break;
+            }
+            newMessages.add(message);
+        }
+
+        return newMessages;
     }
 
     @Override

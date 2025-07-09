@@ -31,38 +31,13 @@ public class NachrichtFacadeImpl implements NachrichtFacade {
     @Override
     public ResponseEntity<?> createNachricht(NachrichtErstellung nachrichtErstellung) {
 
-        Nachricht n = nachrichtUseCase.createNachricht(nachrichtErstellung);
-        if (n == null) {
+        Nachricht nachricht = nachrichtUseCase.createNachricht(nachrichtErstellung);
+        if (nachricht == null) {
             return ResponseEntity.badRequest().body("Chat doesn't exist or Message Sender not in Chat");
         }
         else {
-            return ResponseEntity.ok(n);
+            return ResponseEntity.ok(nachricht);
         }
-    }
-
-    /**
-     * @see NachrichtFacade
-     */
-    @Override
-    public ResponseEntity<?> getNewMessagesByOneChat(Long chatId, Long lastMessageId) {
-        List<Nachricht> messages = nachrichtUseCase.getNewMessages(chatId, lastMessageId);
-
-        return ResponseEntity.ok(messages);
-    }
-
-    @Override
-    public ResponseEntity<?> getNewMessagesByMultChats(List<Long> chatIds, List<Long> lastMessageIds) {
-        Map<Long, List<Nachricht>> newMessages = new HashMap<>();
-
-        if(chatIds.size() != lastMessageIds.size()) {
-            return ResponseEntity.badRequest().body("ChatIds and LastMessageIds must have the same size");
-        }
-
-        for(int i = 0; i < chatIds.size(); i++) {
-            newMessages.put(chatIds.get(i), nachrichtUseCase.getNewMessages(chatIds.get(i), lastMessageIds.get(i)));
-        }
-
-        return ResponseEntity.ok(newMessages);
     }
 
 }

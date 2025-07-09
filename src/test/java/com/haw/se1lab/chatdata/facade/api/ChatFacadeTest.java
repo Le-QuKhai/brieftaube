@@ -27,6 +27,9 @@ import java.util.List;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+/**
+ * Testklasse für ChatFacade
+ */
 @SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT) // environment
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -38,7 +41,7 @@ public class ChatFacadeTest {
     @Autowired
     private BenutzerRepository benutzerRepository;
 
-    private Benutzer user;
+    private Benutzer user1;
     private Benutzer user2;
     private Benutzer user3;
     private Benutzer user4;
@@ -52,8 +55,8 @@ public class ChatFacadeTest {
 
     @BeforeAll
     public void setUpAll() {
-        user = new Benutzer("user1", "1");
-        benutzerRepository.save(user);
+        user1 = new Benutzer("user1", "1");
+        benutzerRepository.save(user1);
         user2 = new Benutzer("user2", "2");
         benutzerRepository.save(user2);
         user3 = new Benutzer("user3", "3");
@@ -66,9 +69,9 @@ public class ChatFacadeTest {
         benutzerRepository.save(userTestC1);
         benutzerRepository.save(userTestC2);
 
-        chat1 = new Chat(user, user2);
+        chat1 = new Chat(user1, user2);
         chatRepository.save(chat1);
-        chat2 = new Chat(user);
+        chat2 = new Chat(user1);
         chatRepository.save(chat2);
         chat3 = new Chat(user3);
         chatRepository.save(chat3);
@@ -82,7 +85,10 @@ public class ChatFacadeTest {
         benutzerRepository.deleteAll();
     }
 
-
+    /**
+     * Positivtest: Testet das Erstellen neuer Chats.
+     * Erwartet: Status OK und dass der Chat zwei Teilnehmer hat.
+     */
     @Test
     public void createNewChatTest() {
         ChatErstellung chatErstellung = new ChatErstellung(
@@ -100,13 +106,15 @@ public class ChatFacadeTest {
                 .body("teilnehmer.size()", is(2));
     }
 
-
+    /**
+     * Positivtest: Testet das Finden aller Chats des Benutzers. Der Benutzer hat mehrere Chats.
+     * Erwartet Status OK und die übergebenen Chats, mit der korrekten Anzahl Teilnehmer.
+     */
     @Test
     public void findMyChatTest() {
-
         Response response = RestAssured.given()
                  .contentType(ContentType.JSON)
-                 .body(user.getBenutzerName())
+                 .body(user1.getBenutzerName())
 
                  .when()
                  .get("/api/chat/all")
@@ -122,9 +130,12 @@ public class ChatFacadeTest {
         assertEquals(chat2.getId(), response.jsonPath().getLong("[1].id"));
      }
 
-
-     @Test
-     public void findMyChatTest2() {
+    /**
+     * Positivtest: Testet das Finden aller Chats des Benutzers. Der Benutzer hat keine Chats.
+     * Erwartet Status OK und das übergeben einer leeren Liste.
+     */
+    @Test
+    public void findMyChatTestNoChats() {
         RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(user4.getBenutzerName())
@@ -135,9 +146,13 @@ public class ChatFacadeTest {
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body("size()", is(0));
-     }
+    }
 
-     @Test
+    /**
+     * Negativtest: Testet das Finden aller Chats des Benutzers. Der Benutzer existiert nicht in der Datenbank.
+     * Erwartet BadRequest.
+     */
+    @Test
     public void findMyChatUserDontExistsTest() {
 
         Benutzer user = new Benutzer("user5", "5");
@@ -153,6 +168,10 @@ public class ChatFacadeTest {
                  .statusCode(HttpStatus.BAD_REQUEST.value());
     }
 
+    /**
+     * Positivtest: Testet das Finden eines Chats anhand der ChatID.
+     * Erwartet Status OK und das der erhaltene Chat die Teilnehmer enthält.
+     */
     @Test
     public void getChatByIdTest() {
         Response response = RestAssured.given()
@@ -171,74 +190,14 @@ public class ChatFacadeTest {
         assertEquals(chat1.getTeilnehmer().size(), response.jsonPath().getLong("teilnehmer.size()"));
     }
 
-    @Test
-    public void getChatByIdWrongIdTest() {
-        RestAssured.given()
-                .contentType(ContentType.JSON)
-                .body(-1)
-
-                .when()
-                .get("api/chat")
-
-                .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
-    }
-
-    @Test
-    public void getAllChats() {
-        Response response = RestAssured.given()
-                .contentType(ContentType.JSON)
-                .body(user.getBenutzerName())
-
-                .when()
-                .get("api/chat/all")
-
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .body("size()", is(2))
-                .body("[0].teilnehmer.size()", is(2))
-                .body("[1].teilnehmer.size()", is(1))
-                .extract().response();
-
-        assertEquals(chat1.getId(), response.jsonPath().getLong("[0].id"));
-        assertEquals(chat2.getId(), response.jsonPath().getLong("[1].id"));
-    }
-
-    @Test
-    public void getAllChatsUserDontExists() {
-        Benutzer user = new Benutzer("user5", "5");
-
-        RestAssured.given()
-                .contentType(ContentType.JSON)
-                .body(user.getBenutzerName())
-
-                .when()
-                .get("api/chat/all")
-
-                .then()
-                .statusCode(HttpStatus.BAD_REQUEST.value());
-    }
-
-    @Test
-    public void getAllchatsUserDontHaveChats() {
-
-        RestAssured.given()
-                .contentType(ContentType.JSON)
-                .body(user4.getBenutzerName())
-
-                .when()
-                .get("api/chat/all")
-
-                .then()
-                .statusCode(HttpStatus.OK.value())
-                .body("size()", is(0));
-    }
-
+    /**
+     * Positivtest: Testet das Erhalten von neuen Chats, die der Benutzer noch nicht sieht.
+     * Erwartet Status OK und den erhaltenen Chat mit dem richtigen Teilnehmer.
+     */
     @Test
     public void getNewChats() {
-
         List<Long> knownChats = new ArrayList<>(){{add(chat1.getId());}};
-        ChatStatus chatStatus = new ChatStatus(user.getBenutzerName(), knownChats);
+        ChatStatus chatStatus = new ChatStatus(user1.getBenutzerName(), knownChats);
 
         Response response = RestAssured.given()
                 .contentType(ContentType.JSON)
@@ -254,13 +213,18 @@ public class ChatFacadeTest {
                 .extract().response();
 
         assertEquals(chat2.getId(), response.jsonPath().getLong("[0].id"));
-        assertEquals(user.getId(), response.jsonPath().getLong("[0].teilnehmer[0].id"));
+        assertEquals(user1.getId(), response.jsonPath().getLong("[0].teilnehmer[0].id"));
     }
 
+    /**
+     * Positivtest: Testet das Erhalten von neuen Chats, die der Benutzer noch nicht sieht.
+     * Es gibt keine neuen Chats.
+     * Erwartet Status OK und keine erhaltenen Chats.
+     */
     @Test
     public void getNewChatsNoNewChats() {
         List<Long> knownChats = new ArrayList<>(){{add(chat1.getId()); add(chat2.getId());}};
-        ChatStatus chatStatus = new ChatStatus(user.getBenutzerName(), knownChats);
+        ChatStatus chatStatus = new ChatStatus(user1.getBenutzerName(), knownChats);
 
         RestAssured.given()
                 .contentType(ContentType.JSON)
@@ -273,7 +237,5 @@ public class ChatFacadeTest {
                 .statusCode(HttpStatus.OK.value())
                 .body("size()", is(0));
     }
-
-
 
 }

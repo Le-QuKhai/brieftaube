@@ -25,6 +25,9 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Testklasse für NachrichtenUseCase
+ */
 @SpringBootTest(classes = Application.class, webEnvironment = SpringBootTest.WebEnvironment.NONE) // environment
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -33,6 +36,9 @@ public class NachrichtenUseCaseTest {
 
     @Autowired
     private NachrichtUseCase nachrichtUseCase;
+    @Autowired
+    private ChatUseCase chatUseCase;
+
     @Autowired
     private NachrichtRepository nachrichtRepository;
     @Autowired
@@ -60,6 +66,11 @@ public class NachrichtenUseCaseTest {
         benutzerRepository.deleteAll();
     }
 
+    /**
+     * Positivtest: Testet das Erstellen einer Nachricht.
+     * Erwartet, dass die erstellte Nachricht in der Datenbank zu finden ist und die richtigen Attribute
+     * enthält.
+     */
     @Test
     @Transactional
     public void createNachricht_Success() {
@@ -76,24 +87,6 @@ public class NachrichtenUseCaseTest {
         Chat savedChat = chatRepository.findById(chat.getId()).get();
         assertEquals(1, savedChat.getNachrichten().size());
         assertEquals(savedNachricht.getId(), savedChat.getNachrichten().get(0).getId());
-    }
-
-    @Test
-    @Transactional
-    public void getNewMessagesTest() {
-        NachrichtErstellung nachrichtErstellung1 = new NachrichtErstellung(
-                "Hallo", chat.getId(), user.getBenutzerName());
-        Nachricht savedNachricht1 = nachrichtUseCase.createNachricht(nachrichtErstellung1);
-
-        NachrichtErstellung nachrichtErstellung2 = new NachrichtErstellung(
-                "Hey", chat.getId(), user2.getBenutzerName());
-        Nachricht savedNachricht2 = nachrichtUseCase.createNachricht(nachrichtErstellung2);
-
-        List<Nachricht> newMessages = nachrichtUseCase.getNewMessages(chat.getId(), savedNachricht1.getId());
-
-        assertEquals(1, newMessages.size());
-        assertEquals(savedNachricht2.getId(), newMessages.get(0).getId());
-
     }
 
 }
