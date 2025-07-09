@@ -38,7 +38,7 @@ COPY brieftaube.conf /etc/nginx/conf.d/brieftaube.conf
 # outputs files to a different directory (e.g., '/app/frontend/build').
 # These files will be placed in '/usr/share/nginx/html' inside the Nginx container,
 # which is the default root for Nginx static files.
-COPY --from=frontend-builder /app/frontend/dist /usr/share/nginx/html
+COPY --from=frontend-builder /app/frontend/dist/brieftaube/browser /usr/share/nginx/html
 
 # Expose port 80. While docker-compose handles port mapping, it's good practice.
 EXPOSE 80
