@@ -117,7 +117,7 @@ public class ChatFacadeTest {
                  .body(user1.getBenutzerName())
 
                  .when()
-                 .get("/api/chat/all")
+                 .post("/api/chat/all")
 
                  .then()
                  .statusCode(HttpStatus.OK.value())
@@ -141,7 +141,7 @@ public class ChatFacadeTest {
                 .body(user4.getBenutzerName())
 
                 .when()
-                .get("/api/chat/all")
+                .post("/api/chat/all")
 
                 .then()
                 .statusCode(HttpStatus.OK.value())
@@ -162,7 +162,7 @@ public class ChatFacadeTest {
                  .body(user.getBenutzerName())
 
                  .when()
-                 .get("/api/chat/all")
+                 .post("/api/chat/all")
 
                  .then()
                  .statusCode(HttpStatus.BAD_REQUEST.value());

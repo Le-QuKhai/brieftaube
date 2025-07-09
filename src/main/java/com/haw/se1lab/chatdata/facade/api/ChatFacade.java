@@ -44,7 +44,7 @@ public interface ChatFacade
      * @param benutzerName der Benutzer, für den man alle Chats holen soll
      * @return Liste von Chats, leere Liste, wenn er ihn keinen drinnen ist.
      */
-    @GetMapping("/all")
+    @PostMapping("/all")
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<?> getAllChatsByUser(@RequestBody String benutzerName);
 
