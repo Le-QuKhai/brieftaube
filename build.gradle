@@ -50,8 +50,8 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok:1.18.34'
 
     // Database drivers
-    runtimeOnly 'com.mysql:mysql-connector-j:8.3.0' // use MySQL in production
-    runtimeOnly 'com.h2database:h2:2.2.224'         // optional: in-memory DB for dev/tests
+    runtimeOnly 'com.mysql:mysql-connector-j'
+    //  runtimeOnly 'com.h2database:h2:2.2.224'         // optional: in-memory DB for dev/tests
     runtimeOnly 'org.hibernate.validator:hibernate-validator:8.0.1.Final'
     runtimeOnly 'org.springframework.boot:spring-boot-devtools'
 
