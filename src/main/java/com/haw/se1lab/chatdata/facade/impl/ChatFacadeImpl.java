@@ -22,6 +22,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Implementierungsklasse für ChatFacade
+ */
 @Component
 @RestController
 public class ChatFacadeImpl implements ChatFacade {
@@ -135,8 +138,10 @@ public class ChatFacadeImpl implements ChatFacade {
     @Override
     public ResponseEntity<?> getNewChats(ChatStatus  chatStatus) {
         List<Chat> newChats = chatUseCase.getNewChats(chatStatus.getChatIds(), chatStatus.getBenutzerName());
+        if (newChats == null) {
+            return ResponseEntity.badRequest().body("Chats or Message could not be found");
+        }
         return ResponseEntity.ok(newChats);
     }
-
 
 }
