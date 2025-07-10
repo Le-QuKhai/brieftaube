@@ -93,7 +93,7 @@ public interface ChatFacade
      * @return ResponseEntity ok, wenn alles gut läuft und die neuen Chats (falls vorhanden)
      *                        badRequest, wenn ein Fehler geschieht.
      */
-    @GetMapping("/get_new")
+    @PostMapping("/get_new")
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<?> getNewChats(@RequestBody ChatStatus chatStatus);
 }
