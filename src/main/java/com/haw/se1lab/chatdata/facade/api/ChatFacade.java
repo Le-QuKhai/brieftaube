@@ -73,6 +73,7 @@ public interface ChatFacade
      * @param chatId die Id von den Chat
      * @return der Chat mit der Id
      */
+
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<?> getChat(@RequestParam Long chatId);
@@ -82,7 +83,7 @@ public interface ChatFacade
      * @param updateChatFormular - Datentyp für das Updaten der Chats
      * @return ResponseEntity ok, wenn erfolgreich oder badRequest bei Fehler.
      */
-    @GetMapping("/update_chats")
+    @PostMapping("/update_chats")
     @ResponseStatus(HttpStatus.OK)
     ResponseEntity<?> getNewMessagesByMultChats(@RequestBody UpdateChatsFormular updateChatFormular);
 
