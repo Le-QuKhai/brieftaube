@@ -3,7 +3,7 @@ name: Build, Test and Deploy to University VM via Jump Host
 on:
   push:
     branches:
-      - main
+      - fVMproxy
 
 jobs:
   build-test-deploy:
