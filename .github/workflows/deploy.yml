@@ -1,0 +1,76 @@
+name: Build, Test and Deploy to University VM via Jump Host
+
+on:
+  push:
+    branches:
+      - fVMproxy # Make sure this is the branch you want to trigger on
+
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4 # Updated from v3 to v4 (latest stable)
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4 # Updated from v3 to v4 (latest stable)
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle' # Recommended for Gradle projects to speed up builds
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x ./gradlew
+
+      - name: Build the project using Gradle
+        run: ./gradlew build
+
+      - name: Run tests
+        run: ./gradlew test
+
+      - name: Copy files to VM via university jump host
+        uses: appleboy/scp-action@v0.1.8 # Updated from v0.1.7 to v0.1.8 (latest stable)
+        with:
+          host: usershell.informatik.haw-hamburg.de
+          username: infwax193
+          key: ${{ secrets.JUMP_PRIVATE_KEY }}
+          port: 22
+          source: "./"
+          target: "/home/guz/brieftaube-temp"
+          rm: true # Remove target directory before copying
+          timeout: 120s
+
+      - name: Deploy to VM via jump host SSH
+        uses: appleboy/ssh-action@v1.0.3 # Updated from v1.0.0 to v1.0.3 (latest stable)
+        with:
+          host: usershell.informatik.haw-hamburg.de
+          username: infwax193
+          key: ${{ secrets.JUMP_PRIVATE_KEY }}
+          script: |
+            # Ensure the target directory for the new code exists and is clean
+            # It's safer to remove the existing 'brieftaube' and then move 'brieftaube-temp'
+            # Also, ensure you are in the correct directory for docker compose commands
+            ssh -o StrictHostKeyChecking=no guz@141.22.11.71 '
+              echo "Starting deployment on remote VM..."
+              # Remove old project directory if it exists
+              if [ -d "~/brieftaube" ]; then
+                echo "Removing existing ~/brieftaube directory..."
+                rm -rf ~/brieftaube
+              fi
+              # Move the newly copied temporary directory to the final project location
+              echo "Moving brieftaube-temp to brieftaube..."
+              mv ~/brieftaube-temp ~/brieftaube
+              # Navigate into the project directory
+              cd ~/brieftaube
+              echo "Running docker compose commands..."
+              # Stop and remove all existing containers and volumes to ensure a clean start
+              docker compose down --volumes
+              # Rebuild all images from scratch
+              docker compose build --no-cache
+              # Start all services in detached mode
+              docker compose up -d
+              echo "Deployment script finished on remote VM."
+            '
+      - name: 🟢 Deployment complete
+        run: echo "Deployment to VM succeeded."

@@ -11,7 +11,7 @@ COPY ./pigeonhole_frontend/package-lock.json ./
 
 RUN npm install --frozen-lockfile # Install dependencies
 
-# Copy the rest of the frontend source code
+# Copy the rest of the frontend source codeA
 COPY ./pigeonhole_frontend/ .
 
 # Build the frontend application
