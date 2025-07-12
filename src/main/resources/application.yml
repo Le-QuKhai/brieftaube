@@ -1,25 +1,40 @@
+# ===================================================================
+# MAIN PRODUCTION CONFIGURATION
+# This file is used when the application runs in Docker.
+# ===================================================================
+
 logging:
   level:
     org.springframework: WARN
+
 spring:
+  # --- Production Database (MySQL) ---
   datasource:
-    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://localhost:3306/chatdb?createDatabaseIfNotExist=true&serverTimezone=UTC}
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://mysql:3306/chatdb?createDatabaseIfNotExist=true&serverTimezone=UTC}
     username: ${SPRING_DATASOURCE_USERNAME:testuser}
     password: ${SPRING_DATASOURCE_PASSWORD:testpass}
 
+  # --- JPA & Hibernate Configuration ---
   jpa:
     hibernate:
-      ddl-auto: update # <-- Tabellen automatisch generieren
-    show-sql: true
+      # Use 'update' to update the schema based on entities without dropping data.
+      ddl-auto: update
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
-        temp.use_jdbc_metadata_defaults: false
+        dialect: org.hibernate.dialect.MySQLDialect # Use the modern dialect
+    show-sql: true
 
-#  server:
-#    servlet:
-#      context-path: /api
+  # --- Spring Boot Actuator Configuration ---
+  management:
+    endpoints:
+      web:
+        exposure:
+          # Exposes the 'health' endpoint over HTTP
+          include: "health"
+        # Sets the base path for all actuator endpoints to match your NGINX proxy
+        base-path: /api/actuator
 
+  # --- Mail Configuration Stub ---
   mail:
     host: fakehost
     port: 587
@@ -31,43 +46,3 @@ spring:
           auth: true
           starttls:
             enable: true
-
-# H2 Database connection
-
-#logging:
-#  level:
-#    org.springframework: WARN
-#---
-#spring:
-#  jpa:
-#    database: H2
-#    generate-ddl: true
-#    hibernate:
-#      ddl-auto: create          # ‘create’ wipes data on every restart; use ‘update’ to keep it
-#    properties:
-#      hibernate:
-#        show_sql: false
-#        use_sql_comments: true
-#
-#  datasource:
-#    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
-#    driver-class-name: org.h2.Driver
-#    username: sa
-#    password:
-#
-#  h2:
-#    console:
-#      enabled: true             # enables http://localhost:8080/h2-console
-#      path: /h2-console
-#
-#  mail:                         # (your existing mail stub)
-#    host: fakehost
-#    port: 587
-#    username: fake
-#    password: fake
-#    properties:
-#      mail:
-#        smtp:
-#          auth: true
-#          starttls:
-#            enable: true
