@@ -11,6 +11,7 @@
 .mtj.tmp/
 
 # Package Files #
+!/.gradle/wrapper/gradle-wrapper.jar # <--- ADD THIS LINE to explicitly include the wrapper JAR
 *.jar
 *.war
 *.nar
