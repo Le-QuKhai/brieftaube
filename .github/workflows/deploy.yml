@@ -3,7 +3,7 @@ name: Build, Test and Deploy to University VM via Jump Host
 on:
   push:
     branches:
-      - fVMproxy # Make sure this is the branch you want to trigger on
+      - fVMproxy
 
 jobs:
   build-test-deploy:
@@ -23,43 +23,47 @@ jobs:
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
 
-      - name: Build the project using Gradle
-        run: ./gradlew build
+      - name: Build and Test the project
+        run: ./gradlew build # The 'build' task usually runs 'test' automatically
 
-      - name: Run tests
-        run: ./gradlew test
-
-      - name: Copy files to VM via university jump host
-        uses: appleboy/scp-action@v0.1.7 # <<<--- CORRECTED VERSION HERE!
-        with:
-          host: usershell.informatik.haw-hamburg.de
-          username: infwax193
-          key: ${{ secrets.JUMP_PRIVATE_KEY }}
-          port: 22
-          source: "./"
-          target: "/home/guz/brieftaube-temp"
-          rm: true
-          timeout: 120s
-
-      - name: Deploy to VM via jump host SSH
+      - name: 🚀 Deploy to VM via Jump Host
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: usershell.informatik.haw-hamburg.de
-          username: infwax193
-          key: ${{ secrets.JUMP_PRIVATE_KEY }}
+          # --- Final VM Credentials ---
+          host: ${{ secrets.VM_HOST }} # e.g., 192.168.1.100 or your VM's hostname
+          username: ${{ secrets.VM_USERNAME }} # e.g., 'uncleruckus' on the VM
+          key: ${{ secrets.SSH_PRIVATE_KEY }} # The private key for the FINAL VM
+
+          # --- Jump Host (Proxy) Credentials ---
+          proxy_host: usershell.informatik.haw-hamburg.de
+          proxy_username: infwax193
+          proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+          # --- Script to run on the FINAL VM ---
           script: |
-            echo "Starting deployment on remote VM..."
-            if [ -d "~/brieftaube" ]; then
-              echo "Removing existing ~/brieftaube directory..."
-              rm -rf ~/brieftaube
+            # 1. Create a temporary directory on the VM
+            mkdir -p /home/${{ secrets.VM_USERNAME }}/brieftaube-temp
+            
+            # 2. Copy the essential files from the GitHub Runner to the VM's temp directory
+            #    We are copying only what's needed, not the whole repository.
+            scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r build/libs/*.jar docker-compose.yml .env ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }}:/home/${{ secrets.VM_USERNAME }}/brieftaube-temp/
+            
+            # 3. Stop old containers, replace files, and start new containers
+            cd /home/${{ secrets.VM_USERNAME }}/
+            if [ -d "brieftaube" ]; then
+              cd brieftaube
+              echo "Shutting down existing services..."
+              docker compose down --volumes
+              cd ..
+              rm -rf brieftaube
             fi
-            echo "Moving brieftaube-temp to brieftaube..."
-            mv ~/brieftaube-temp ~/brieftaube
-            cd ~/brieftaube
-            echo "Running docker compose commands..."
-            docker compose down --volumes
+            
+            echo "Deploying new version..."
+            mv brieftaube-temp brieftaube
+            cd brieftaube
+
+            echo "Building and starting new services..."
             docker compose build --no-cache
             docker compose up -d
-            echo "Deployment script finished on remote VM."
-      - name: 🟢 Deployment complete
-        run: echo "Deployment to VM succeeded."
+            
+            echo "✅ Deployment complete!"
