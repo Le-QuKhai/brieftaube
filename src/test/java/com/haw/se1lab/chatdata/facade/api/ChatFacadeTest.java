@@ -3,8 +3,14 @@ package com.haw.se1lab.chatdata.facade.api;
 import com.haw.se1lab.Application;
 import com.haw.se1lab.chatdata.common.api.datatype.ChatErstellung;
 import com.haw.se1lab.chatdata.common.api.datatype.ChatStatus;
+import com.haw.se1lab.chatdata.common.api.datatype.NachrichtErstellung;
+import com.haw.se1lab.chatdata.common.api.datatype.UpdateChatsFormular;
 import com.haw.se1lab.chatdata.dataaccess.api.entity.Chat;
+import com.haw.se1lab.chatdata.dataaccess.api.entity.Nachricht;
 import com.haw.se1lab.chatdata.dataaccess.api.repo.ChatRepository;
+import com.haw.se1lab.chatdata.dataaccess.api.repo.NachrichtRepository;
+import com.haw.se1lab.chatdata.logic.api.usecase.ChatUseCase;
+import com.haw.se1lab.chatdata.logic.api.usecase.NachrichtUseCase;
 import com.haw.se1lab.users.dataaccess.api.entity.Benutzer;
 import com.haw.se1lab.users.dataaccess.api.repo.BenutzerRepository;
 import io.restassured.RestAssured;
@@ -20,9 +26,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.http.HttpStatus;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -40,6 +48,8 @@ public class ChatFacadeTest {
     private ChatRepository chatRepository;
     @Autowired
     private BenutzerRepository benutzerRepository;
+    @Autowired
+    private NachrichtRepository nachrichtRepository;
 
     private Benutzer user1;
     private Benutzer user2;
@@ -47,10 +57,15 @@ public class ChatFacadeTest {
     private Benutzer user4;
     Benutzer userTestC1;
     Benutzer userTestC2;
+    private Chat chatTest;
     private Chat chat1;
     private Chat chat2;
     private Chat chat3;
     private Chat chat4;
+    @Autowired
+    private ChatUseCase chatUseCase;
+    @Autowired
+    private NachrichtUseCase nachrichtUseCase;
 
 
     @BeforeAll
@@ -69,6 +84,8 @@ public class ChatFacadeTest {
         benutzerRepository.save(userTestC1);
         benutzerRepository.save(userTestC2);
 
+        chatTest = new Chat(userTestC1, userTestC2);
+        chatRepository.save(chatTest);
         chat1 = new Chat(user1, user2);
         chatRepository.save(chat1);
         chat2 = new Chat(user1);
@@ -82,6 +99,7 @@ public class ChatFacadeTest {
     @AfterAll
     public void tearDown() {
         chatRepository.deleteAll();
+        nachrichtRepository.deleteAll();
         benutzerRepository.deleteAll();
     }
 
@@ -204,7 +222,7 @@ public class ChatFacadeTest {
                 .body(chatStatus)
 
                 .when()
-                .get("api/chat/get_new")
+                .post("api/chat/get_new")
 
                 .then()
                 .statusCode(HttpStatus.OK.value())
@@ -236,6 +254,51 @@ public class ChatFacadeTest {
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body("size()", is(0));
+    }
+
+    /**
+     * Positivtest: Testet das Updaten von Nachrichten in mehreren Chats.
+     * Ein Chat hat eine neue Nachricht. Ein weiterer Chat hat keine neue Nachricht.
+     */
+    @Transactional
+    @Test
+    public void updateChatMessagesTest() {
+        NachrichtErstellung nachrichtErstellung1 = new NachrichtErstellung(
+                "Hallo1", chatTest.getId(), userTestC1.getBenutzerName());
+        NachrichtErstellung nachrichtErstellung2 = new NachrichtErstellung(
+                "Hey2", chatTest.getId(), userTestC2.getBenutzerName());
+        NachrichtErstellung nachrichtErstellung3 = new NachrichtErstellung(
+                "Moin3", chat1.getId(), user1.getBenutzerName());
+        Nachricht nachricht1 = nachrichtUseCase.createNachricht(nachrichtErstellung1);
+        Nachricht nachricht2 = nachrichtUseCase.createNachricht(nachrichtErstellung2);
+        Nachricht nachricht3 = nachrichtUseCase.createNachricht(nachrichtErstellung3);
+
+        List<Long> chatIds = new ArrayList<>() {{
+            add(chatTest.getId());
+            add(chat1.getId());
+        }};
+        List<Long> lastMsgIds = new ArrayList<>() {{
+            add(nachricht1.getId());
+            add(nachricht3.getId());
+        }};
+        UpdateChatsFormular updateChatsFormular = new UpdateChatsFormular(chatIds, lastMsgIds);
+
+        Response response = RestAssured.given()
+                .contentType(ContentType.JSON)
+                .body(updateChatsFormular)
+
+                .when()
+                .post("api/chat/update_chats")
+
+                .then()
+                .statusCode(HttpStatus.OK.value())
+                .extract().response();
+        /*
+        Map<Long, List<Nachricht>> responseMap = response.as(Map.class);
+        assertEquals(nachricht2.getId(), responseMap.get(chatTest.getId()).get(0).getId());
+        assertEquals(List.of(), responseMap.get(chat1.getId()));
+
+         */
     }
 
 }

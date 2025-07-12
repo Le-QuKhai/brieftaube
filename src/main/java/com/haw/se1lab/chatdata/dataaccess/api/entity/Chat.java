@@ -33,6 +33,7 @@ public class Chat extends AbstractEntity
         nachrichten = new ArrayList<>();
         teilnehmer = new HashSet<>();
         addTeilnehmer(benutzer);
+
     }
 
     public Chat(Benutzer benutzer, Benutzer andererBenutzer)
