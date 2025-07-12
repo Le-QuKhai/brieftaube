@@ -247,14 +247,28 @@ public class ChatFacadeTest {
         RestAssured.given()
                 .contentType(ContentType.JSON)
                 .body(chatStatus)
-
                 .when()
-                .get("api/chat/get_new")
-
+                .post("api/chat/get_new") // Corrected from .get() to .post()
                 .then()
                 .statusCode(HttpStatus.OK.value())
                 .body("size()", is(0));
     }
+//    @Test
+//    public void getNewChatsNoNewChats() {
+//        List<Long> knownChats = new ArrayList<>(){{add(chat1.getId()); add(chat2.getId());}};
+//        ChatStatus chatStatus = new ChatStatus(user1.getBenutzerName(), knownChats);
+//
+//        RestAssured.given()
+//                .contentType(ContentType.JSON)
+//                .body(chatStatus)
+//
+//                .when()
+//                .get("api/chat/get_new")
+//
+//                .then()
+//                .statusCode(HttpStatus.OK.value())
+//                .body("size()", is(0));
+//    }
 
     /**
      * Positivtest: Testet das Updaten von Nachrichten in mehreren Chats.
