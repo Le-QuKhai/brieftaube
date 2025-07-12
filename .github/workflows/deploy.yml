@@ -1,4 +1,4 @@
-name: Build, Test and Deploy to University VM via Jump Host
+name: Build and Deploy to VM
 
 on:
   push:
@@ -6,11 +6,11 @@ on:
       - fVMproxy
 
 jobs:
-  build-test-deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Set up JDK 17
@@ -19,51 +19,44 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Make Gradle wrapper executable
-        run: chmod +x ./gradlew
-
-      - name: Build and Test the project
+      - name: Build Project with Gradle
         run: ./gradlew build
 
-      # STEP 1: Copy necessary files from the Runner to the VM
-      - name: 🚚 Copy deployment files to VM
+      - name: 🚚 Copy Files to Server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-
-          # --- Jump Host Credentials ---
           proxy_host: usershell.informatik.haw-hamburg.de
           proxy_username: infwax193
-          proxy_key: ${{ secrets.SSH_PRIVATE_KEY }} # Assumes same key for jump and VM
-
-          # --- Files to copy ---
-          source: "build/libs/*.jar,docker-compose.yml,Dockerfile.proxy,.env" # Comma-separated list of files
+          proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: |
+            build/libs/*.jar
+            docker-compose.yml
+            Dockerfile.proxy
+            .env
           target: "/home/${{ secrets.VM_USERNAME }}/brieftaube"
-          strip_components: 1 # Removes the 'build/libs' part of the path on the server
 
-      # STEP 2: Execute the deployment script on the VM
-      - name: 🚀 Run deployment script on VM
+      - name: 🚀 Deploy on Server
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VM_HOST }}
           username: ${{ secrets.VM_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
-
-          # --- Jump Host Credentials ---
           proxy_host: usershell.informatik.haw-hamburg.de
           proxy_username: infwax193
-          proxy_key: ${{ secrets.SSH_PRIVATE_KEY }} # Assumes same key for jump and VM
-
+          proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # Navigate to the project directory where files were copied
+            # Navigate to the deployment directory
             cd /home/${{ secrets.VM_USERNAME }}/brieftaube
 
-            echo "Building and starting new services..."
+            # Move the jar file to a predictable name
+            mv build/libs/*.jar app.jar
+
+            # Bring down old services, build new images, and start
             docker compose down --volumes
             docker compose build --no-cache
             docker compose up -d
-            
-            echo "✅ Deployment complete!"
+
+            echo "✅ Deployment Finished."
