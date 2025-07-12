@@ -1,5 +1,15 @@
+# IntelliJ-specific
+.idea/
+*.iml
+
+# Gradle build output
+/build/
+.gradle/
+*.lock
+
 # Compiled class file
 *.class
+*.bin
 
 # Log file
 *.log
