@@ -30,7 +30,7 @@ jobs:
         run: ./gradlew test
 
       - name: Copy files to VM via university jump host
-        uses: appleboy/scp-action@v0.1.8
+        uses: appleboy/scp-action@v0.1.7 # <<<--- CORRECTED VERSION HERE!
         with:
           host: usershell.informatik.haw-hamburg.de
           username: infwax193
