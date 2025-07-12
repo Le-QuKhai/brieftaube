@@ -18,51 +18,51 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
-          cache: 'gradle'
 
       - name: Make Gradle wrapper executable
         run: chmod +x ./gradlew
 
       - name: Build and Test the project
-        run: ./gradlew build # The 'build' task usually runs 'test' automatically
+        run: ./gradlew build
 
-      - name: 🚀 Deploy to VM via Jump Host
-        uses: appleboy/ssh-action@v1.0.3
+      # STEP 1: Copy necessary files from the Runner to the VM
+      - name: 🚚 Copy deployment files to VM
+        uses: appleboy/scp-action@v0.1.7
         with:
-          # --- Final VM Credentials ---
-          host: ${{ secrets.VM_HOST }} # e.g., 192.168.1.100 or your VM's hostname
-          username: ${{ secrets.VM_USERNAME }} # e.g., 'uncleruckus' on the VM
-          key: ${{ secrets.SSH_PRIVATE_KEY }} # The private key for the FINAL VM
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 22
 
-          # --- Jump Host (Proxy) Credentials ---
+          # --- Jump Host Credentials ---
           proxy_host: usershell.informatik.haw-hamburg.de
           proxy_username: infwax193
-          proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          proxy_key: ${{ secrets.SSH_PRIVATE_KEY }} # Assumes same key for jump and VM
 
-          # --- Script to run on the FINAL VM ---
+          # --- Files to copy ---
+          source: "build/libs/*.jar,docker-compose.yml,Dockerfile.proxy,.env" # Comma-separated list of files
+          target: "/home/${{ secrets.VM_USERNAME }}/brieftaube"
+          strip_components: 1 # Removes the 'build/libs' part of the path on the server
+
+      # STEP 2: Execute the deployment script on the VM
+      - name: 🚀 Run deployment script on VM
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+          # --- Jump Host Credentials ---
+          proxy_host: usershell.informatik.haw-hamburg.de
+          proxy_username: infwax193
+          proxy_key: ${{ secrets.SSH_PRIVATE_KEY }} # Assumes same key for jump and VM
+
           script: |
-            # 1. Create a temporary directory on the VM
-            mkdir -p /home/${{ secrets.VM_USERNAME }}/brieftaube-temp
-            
-            # 2. Copy the essential files from the GitHub Runner to the VM's temp directory
-            #    We are copying only what's needed, not the whole repository.
-            scp -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -r build/libs/*.jar docker-compose.yml .env ${{ secrets.VM_USERNAME }}@${{ secrets.VM_HOST }}:/home/${{ secrets.VM_USERNAME }}/brieftaube-temp/
-            
-            # 3. Stop old containers, replace files, and start new containers
-            cd /home/${{ secrets.VM_USERNAME }}/
-            if [ -d "brieftaube" ]; then
-              cd brieftaube
-              echo "Shutting down existing services..."
-              docker compose down --volumes
-              cd ..
-              rm -rf brieftaube
-            fi
-            
-            echo "Deploying new version..."
-            mv brieftaube-temp brieftaube
-            cd brieftaube
+            # Navigate to the project directory where files were copied
+            cd /home/${{ secrets.VM_USERNAME }}/brieftaube
 
             echo "Building and starting new services..."
+            docker compose down --volumes
             docker compose build --no-cache
             docker compose up -d
             
