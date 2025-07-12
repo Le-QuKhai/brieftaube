@@ -22,6 +22,11 @@ jobs:
       - name: Build Project with Gradle
         run: ./gradlew build
 
+      # --- ADD THIS DEBUGGING STEP ---
+      - name: 🕵️ List files in workspace
+        run: ls -laR
+      # This will show you all files and their correct paths.
+
       - name: 🚚 Copy Files to Server
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -48,15 +53,9 @@ jobs:
           proxy_username: infwax193
           proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # Navigate to the deployment directory
             cd /home/${{ secrets.VM_USERNAME }}/brieftaube
-
-            # Move the jar file to a predictable name
             mv build/libs/*.jar app.jar
-
-            # Bring down old services, build new images, and start
             docker compose down --volumes
             docker compose build --no-cache
             docker compose up -d
-
             echo "✅ Deployment Finished."
