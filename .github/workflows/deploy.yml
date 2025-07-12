@@ -1,0 +1,65 @@
+name: Build, Test and Deploy to University VM via Jump Host
+
+on:
+  push:
+    branches:
+      - fVMproxy # Make sure this is the branch you want to trigger on
+
+jobs:
+  build-test-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'gradle'
+
+      - name: Make Gradle wrapper executable
+        run: chmod +x ./gradlew
+
+      - name: Build the project using Gradle
+        run: ./gradlew build
+
+      - name: Run tests
+        run: ./gradlew test
+
+      - name: Copy files to VM via university jump host
+        uses: appleboy/scp-action@v0.1.7 # <<<--- CORRECTED VERSION HERE!
+        with:
+          host: usershell.informatik.haw-hamburg.de
+          username: infwax193
+          key: ${{ secrets.JUMP_PRIVATE_KEY }}
+          port: 22
+          source: "./"
+          target: "/home/guz/brieftaube-temp"
+          rm: true
+          timeout: 120s
+
+      - name: Deploy to VM via jump host SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: usershell.informatik.haw-hamburg.de
+          username: infwax193
+          key: ${{ secrets.JUMP_PRIVATE_KEY }}
+          script: |
+            echo "Starting deployment on remote VM..."
+            if [ -d "~/brieftaube" ]; then
+              echo "Removing existing ~/brieftaube directory..."
+              rm -rf ~/brieftaube
+            fi
+            echo "Moving brieftaube-temp to brieftaube..."
+            mv ~/brieftaube-temp ~/brieftaube
+            cd ~/brieftaube
+            echo "Running docker compose commands..."
+            docker compose down --volumes
+            docker compose build --no-cache
+            docker compose up -d
+            echo "Deployment script finished on remote VM."
+      - name: 🟢 Deployment complete
+        run: echo "Deployment to VM succeeded."

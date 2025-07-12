@@ -1,0 +1,55 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql_chatdb
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: chatdb
+      MYSQL_USER: testuser
+      MYSQL_PASSWORD: testpass
+      MYSQL_ROOT_PASSWORD: rootpass
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  app:
+    build: .
+    container_name: brieftaube_app
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/chatdb?createDatabaseIfNotExist=true&serverTimezone=UTC
+      SPRING_DATASOURCE_USERNAME: testuser
+      SPRING_DATASOURCE_PASSWORD: testpass
+    depends_on:
+      mysql:
+        condition: service_healthy # Wait for MySQL to be healthy before starting the app
+
+  # REMOVED the 'frontend' service as its build is now part of the proxy
+  # frontend:
+  #   build:
+  #     context: ./pigeonhole_frontend
+  #   container_name: brieftaube_frontend
+  #   depends_on:
+  #     - app
+
+  proxy:
+    build:
+      context: . # The build context is the root 'brieftaube' directory
+      dockerfile: Dockerfile.proxy # Use the new Dockerfile for the proxy service
+    container_name: brieftaube_proxy
+    ports:
+      - "80:80"
+    # REMOVE the volumes section, as files are now copied during the build
+    # volumes:
+    #   - ./pigeonhole_frontend/brieftaube.conf:/etc/nginx/conf.d/brieftaube.conf:ro
+    depends_on:
+      - app # Now the proxy directly depends on the app, as it serves the frontend itself
+
+volumes:
+  mysql_data:

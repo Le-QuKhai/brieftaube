@@ -1,0 +1,16 @@
+# This is the clean, correct configuration for all tests.
+spring:
+  jpa:
+    # Tell Hibernate to create tables at the start and drop them at the end.
+    hibernate:
+      ddl-auto: create-drop
+    # Show the generated SQL in the console for debugging.
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+  # --- H2 Database Configuration (will be used automatically for tests) ---
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1
+    username: sa
+    password:
