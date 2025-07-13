@@ -10,10 +10,12 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository and Submodules
+      - name: Checkout Main Repository
         uses: actions/checkout@v4
-        with:
-          submodules: 'recursive'
+
+      - name: Clone Frontend Repository
+        run: git clone https://github.com/brieftaube-haw/pigeonhole_frontend.git
+        # ⬆️ REPLACE THE URL ABOVE with the HTTPS URL of your public frontend repository.
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -32,7 +34,6 @@ jobs:
           cp Dockerfile deployment/
           cp Dockerfile.proxy deployment/
           cp brieftaube.conf deployment/
-          # CORRECTED: Copy the entire directory, not its contents
           cp -r pigeonhole_frontend deployment/
 
       - name: 🚚 Copy Deployment Package to Server
