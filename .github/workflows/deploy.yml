@@ -10,12 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Main Repository
+      - name: Checkout Repository and Submodules
         uses: actions/checkout@v4
-
-      - name: Clone Frontend Repository
-        run: git clone https://github.com/brieftaube-haw/pigeonhole_frontend.git
-        # ⬆️ REPLACE THE URL ABOVE with the HTTPS URL of your public frontend repository.
+        with:
+          submodules: 'recursive'
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -48,6 +46,10 @@ jobs:
           source: "deployment"
           target: "/home/${{ secrets.VM_USERNAME }}/"
           rm: true
+
+      # --- THIS IS THE FIX ---
+      - name: ⏸️ Wait for 15 seconds to avoid IP ban
+        run: sleep 15
 
       - name: 🚀 Deploy on Server
         uses: appleboy/ssh-action@v1.0.3
