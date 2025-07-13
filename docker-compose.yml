@@ -30,24 +30,15 @@ services:
       mysql:
         condition: service_healthy # Wait for MySQL to be healthy before starting the app
 
-  # REMOVED the 'frontend' service as its build is now part of the proxy
-  # frontend:
-  #   build:
-  #     context: ./pigeonhole_frontend
-  #   container_name: brieftaube_frontend
-  #   depends_on:
-  #     - app
 
   proxy:
     build:
       context: . # The build context is the root 'brieftaube' directory
-      dockerfile: Dockerfile.proxy # Use the new Dockerfile for the proxy service
+      dockerfile: Dockerfile.proxy # Use the Dockerfile for the proxy service
     container_name: brieftaube_proxy
     ports:
       - "80:80"
-    # REMOVE the volumes section, as files are now copied during the build
-    # volumes:
-    #   - ./pigeonhole_frontend/brieftaube.conf:/etc/nginx/conf.d/brieftaube.conf:ro
+
     depends_on:
       - app # Now the proxy directly depends on the app, as it serves the frontend itself
 

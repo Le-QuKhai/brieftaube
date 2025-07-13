@@ -19,8 +19,7 @@ jobs:
           # This bypasses any broken submodule links.
           git clone https://github.com/brieftaube-haw/pigeonhole_frontend.git pigeonhole_frontend
 
-      - name: 🕵️ Verify Frontend Files Exist
-        # This step proves the clone worked before we proceed.
+      - name: Verify Frontend Files Exist
         run: ls -laR pigeonhole_frontend
 
       - name: Set up JDK 17
@@ -32,7 +31,7 @@ jobs:
       - name: Build Backend Project with Gradle
         run: ./gradlew build
 
-      - name: 📦 Prepare Deployment Package
+      - name: Prepare Deployment Package
         run: |
           mkdir -p deployment
           cp build/libs/app.jar deployment/
@@ -42,8 +41,7 @@ jobs:
           cp brieftaube.conf deployment/
           cp -r pigeonhole_frontend deployment/
 
-      - name: 🚚 Copy Deployment Package to Server
-        # This step will only run if the package was prepared successfully.
+      - name: Copy Deployment Package to Server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.VM_HOST }}
@@ -56,7 +54,7 @@ jobs:
           target: "/home/${{ secrets.VM_USERNAME }}/brieftaube"
           rm: true
 
-      - name: 🚀 Deploy on Server
+      - name: Deploy on Server
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.VM_HOST }}

@@ -6,14 +6,12 @@ FROM node:18-alpine AS frontend-builder
 WORKDIR /app
 
 # Copy package.json and package-lock.json first
-# CORRECTED: The path now correctly includes the subdirectory
 COPY pigeonhole_frontend/package.json ./
 COPY pigeonhole_frontend/package-lock.json ./
 
 RUN npm install --frozen-lockfile
 
 # Copy the rest of the frontend source code
-# CORRECTED: The path now correctly includes the subdirectory
 COPY pigeonhole_frontend/ .
 
 # Build the frontend application

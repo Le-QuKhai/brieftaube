@@ -17,7 +17,7 @@ public class CorsConfig implements WebMvcConfigurer {
                 .allowedOrigins(
                         "http://localhost:4200", // For local Angular development
                         "http://localhost",      // For accessing NGINX locally
-                        "http://your-server-ip-or-domain.com" // IMPORTANT: Replace with your actual public address
+                        "http://141.22.11.71" // Public address
                 )
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                 .allowedHeaders("*")
