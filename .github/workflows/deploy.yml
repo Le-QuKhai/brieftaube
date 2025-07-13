@@ -22,10 +22,6 @@ jobs:
       - name: Build Project with Gradle
         run: ./gradlew build
 
-      # THIS IS THE ESSENTIAL DEBUGGING STEP
-      - name: 🕵️ List files in workspace
-        run: ls -laR
-
       - name: 🚚 Copy Files to Server
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -36,16 +32,27 @@ jobs:
           proxy_username: infwax193
           proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: |
-            build/libs/*.jar
+            build/libs/app.jar
             docker-compose.yml
             Dockerfile.proxy
-            .env
           target: "/home/${{ secrets.VM_USERNAME }}/brieftaube"
 
       - name: 🚀 Deploy on Server
-        # This step will be skipped because the copy step fails, which is fine for now.
         uses: appleboy/ssh-action@v1.0.3
         with:
-          # ... same configuration ...
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          proxy_host: usershell.informatik.haw-hamburg.de
+          proxy_username: infwax193
+          proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            echo "Deployment script would run here."
+            # Navigate to the deployment directory
+            cd /home/${{ secrets.VM_USERNAME }}/brieftaube
+
+            # Build new images and start the services
+            docker compose down --volumes
+            docker compose build --no-cache
+            docker compose up -d
+
+            echo "✅ Deployment Finished."
