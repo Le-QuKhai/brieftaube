@@ -19,10 +19,9 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build Project with Gradle
+      - name: Build Backend Project with Gradle
         run: ./gradlew build
 
-      # STEP 1: Create a self-contained deployment package
       - name: 📦 Prepare Deployment Package
         run: |
           mkdir -p deployment
@@ -30,8 +29,10 @@ jobs:
           cp docker-compose.yml deployment/
           cp Dockerfile deployment/
           cp Dockerfile.proxy deployment/
+          cp brieftaube.conf deployment/
+          # Copy the entire frontend project into the deployment package
+          cp -r pigeonhole_frontend/* deployment/
 
-      # STEP 2: Copy the SINGLE deployment folder
       - name: 🚚 Copy Deployment Package to Server
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -41,11 +42,10 @@ jobs:
           proxy_host: usershell.informatik.haw-hamburg.de
           proxy_username: infwax193
           proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "deployment" # Copy the single folder
-          target: "/home/${{ secrets.VM_USERNAME }}/brieftaube"
-          rm: true # Remove the target directory before copying for a clean slate
+          source: "deployment"
+          target: "/home/${{ secrets.VM_USERNAME }}/"
+          rm: true
 
-      # STEP 3: Execute the deployment script on the server
       - name: 🚀 Deploy on Server
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -56,10 +56,10 @@ jobs:
           proxy_username: infwax193
           proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # Navigate into the newly copied deployment directory
-            cd /home/${{ secrets.VM_USERNAME }}/brieftaube/deployment
+            # The files are now in ~/deployment, which becomes the build context
+            cd /home/${{ secrets.VM_USERNAME }}/deployment
 
-            # Build and start services from within this directory
+            # Build and start services
             docker compose down --volumes
             docker compose build --no-cache
             docker compose up -d
