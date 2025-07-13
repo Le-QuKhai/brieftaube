@@ -1,4 +1,4 @@
-name: DEBUG - List All Files
+name: Build, Package, and Deploy to VM
 
 on:
   push:
@@ -6,13 +6,68 @@ on:
       - fVMproxy
 
 jobs:
-  debug-file-listing:
+  build-and-deploy:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Repository and Submodules
-        uses: actions/checkout@v4
-        with:
-          submodules: 'recursive'
 
-      - name: 🕵️ Show all files and directories
-        run: ls -laR
+    steps:
+      - name: Checkout Main Repository
+        uses: actions/checkout@v4
+
+      - name: Manually Clone Frontend Repository
+        run: |
+          # We explicitly clone the public frontend repository.
+          # This bypasses any broken submodule links.
+          git clone https://github.com/Le-QuKhai/pigeonhole_frontend.git pigeonhole_frontend
+
+      - name: 🕵️ Verify Frontend Files Exist
+        # This step proves the clone worked before we proceed.
+        run: ls -laR pigeonhole_frontend
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Build Backend Project with Gradle
+        run: ./gradlew build
+
+      - name: 📦 Prepare Deployment Package
+        run: |
+          mkdir -p deployment
+          cp build/libs/app.jar deployment/
+          cp docker-compose.yml deployment/
+          cp Dockerfile deployment/
+          cp Dockerfile.proxy deployment/
+          cp brieftaube.conf deployment/
+          cp -r pigeonhole_frontend deployment/
+
+      - name: 🚚 Copy Deployment Package to Server
+        # This step will only run if the package was prepared successfully.
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          proxy_host: usershell.informatik.haw-hamburg.de
+          proxy_username: infwax193
+          proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: "deployment"
+          target: "/home/${{ secrets.VM_USERNAME }}/brieftaube"
+          rm: true
+
+      - name: 🚀 Deploy on Server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          proxy_host: usershell.informatik.haw-hamburg.de
+          proxy_username: infwax193
+          proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd /home/${{ secrets.VM_USERNAME }}/brieftaube/deployment
+            docker compose down --volumes
+            docker compose build --no-cache
+            docker compose up -d
+            echo "✅ Deployment Finished."
