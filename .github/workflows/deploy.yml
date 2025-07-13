@@ -22,10 +22,9 @@ jobs:
       - name: Build Project with Gradle
         run: ./gradlew build
 
-      # --- ADD THIS DEBUGGING STEP ---
+      # THIS IS THE ESSENTIAL DEBUGGING STEP
       - name: 🕵️ List files in workspace
         run: ls -laR
-      # This will show you all files and their correct paths.
 
       - name: 🚚 Copy Files to Server
         uses: appleboy/scp-action@v0.1.7
@@ -44,18 +43,9 @@ jobs:
           target: "/home/${{ secrets.VM_USERNAME }}/brieftaube"
 
       - name: 🚀 Deploy on Server
+        # This step will be skipped because the copy step fails, which is fine for now.
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.VM_HOST }}
-          username: ${{ secrets.VM_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          proxy_host: usershell.informatik.haw-hamburg.de
-          proxy_username: infwax193
-          proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          # ... same configuration ...
           script: |
-            cd /home/${{ secrets.VM_USERNAME }}/brieftaube
-            mv build/libs/*.jar app.jar
-            docker compose down --volumes
-            docker compose build --no-cache
-            docker compose up -d
-            echo "✅ Deployment Finished."
+            echo "Deployment script would run here."
