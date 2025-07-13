@@ -10,8 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Repository
+      - name: Checkout Repository and Submodules
         uses: actions/checkout@v4
+        with:
+          submodules: 'recursive' # <-- THIS IS THE FIX. IT DOWNLOADS THE SUBMODULE CODE.
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -30,7 +32,7 @@ jobs:
           cp Dockerfile deployment/
           cp Dockerfile.proxy deployment/
           cp brieftaube.conf deployment/
-          # Copy the entire frontend project into the deployment package
+          # This command will now succeed because the submodule was checked out
           cp -r pigeonhole_frontend/* deployment/
 
       - name: 🚚 Copy Deployment Package to Server
@@ -56,12 +58,8 @@ jobs:
           proxy_username: infwax193
           proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # The files are now in ~/deployment, which becomes the build context
             cd /home/${{ secrets.VM_USERNAME }}/deployment
-
-            # Build and start services
             docker compose down --volumes
             docker compose build --no-cache
             docker compose up -d
-
             echo "✅ Deployment Finished."
