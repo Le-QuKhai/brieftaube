@@ -1,4 +1,4 @@
-# Pigeonhole
+# Pigeonhole2
 Chat Web-application for the HAW BAI4 SE2 Project.
 
 # Introduction
