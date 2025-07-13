@@ -1,4 +1,4 @@
-name: SIMPLE TEST - Copy ONE File
+name: Build and Deploy to VM
 
 on:
   push:
@@ -6,16 +6,23 @@ on:
       - fVMproxy
 
 jobs:
-  debug-copy-job:
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: 🕵️ List files in the root directory
-        run: ls -la
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
 
-      - name: 🚚 ATTEMPT TO COPY ONLY docker-compose.yml
+      - name: Build Project with Gradle
+        run: ./gradlew build
+
+      - name: 🚚 Copy Files to Server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.VM_HOST }}
@@ -24,5 +31,31 @@ jobs:
           proxy_host: usershell.informatik.haw-hamburg.de
           proxy_username: infwax193
           proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "docker-compose.yml" # We are only trying to copy this one file.
-          target: "/home/${{ secrets.VM_USERNAME }}/brieftaube_test"
+          source: |
+            build/libs/app.jar
+            docker-compose.yml
+            Dockerfile
+            Dockerfile.proxy
+          target: "/home/${{ secrets.VM_USERNAME }}/brieftaube"
+
+      - name: 🚀 Deploy on Server
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          proxy_host: usershell.informatik.haw-hamburg.de
+          proxy_username: infwax193
+          proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            # Navigate to the deployment directory
+            cd /home/${{ secrets.VM_USERNAME }}/brieftaube
+            
+            # The JAR file is already named app.jar from the build, no need to move it.
+
+            # Build new images and start the services
+            docker compose down --volumes
+            docker compose build --no-cache
+            docker compose up -d
+
+            echo "✅ Deployment Finished."
