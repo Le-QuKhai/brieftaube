@@ -1,4 +1,4 @@
-name: Build and Deploy to VM
+name: Build, Package, and Deploy to VM
 
 on:
   push:
@@ -22,7 +22,17 @@ jobs:
       - name: Build Project with Gradle
         run: ./gradlew build
 
-      - name: 🚚 Copy Files to Server
+      # STEP 1: Create a self-contained deployment package
+      - name: 📦 Prepare Deployment Package
+        run: |
+          mkdir -p deployment
+          cp build/libs/app.jar deployment/
+          cp docker-compose.yml deployment/
+          cp Dockerfile deployment/
+          cp Dockerfile.proxy deployment/
+
+      # STEP 2: Copy the SINGLE deployment folder
+      - name: 🚚 Copy Deployment Package to Server
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.VM_HOST }}
@@ -31,13 +41,11 @@ jobs:
           proxy_host: usershell.informatik.haw-hamburg.de
           proxy_username: infwax193
           proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: |
-            build/libs/app.jar
-            docker-compose.yml
-            Dockerfile
-            Dockerfile.proxy
+          source: "deployment" # Copy the single folder
           target: "/home/${{ secrets.VM_USERNAME }}/brieftaube"
+          rm: true # Remove the target directory before copying for a clean slate
 
+      # STEP 3: Execute the deployment script on the server
       - name: 🚀 Deploy on Server
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -48,12 +56,10 @@ jobs:
           proxy_username: infwax193
           proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            # Navigate to the deployment directory
-            cd /home/${{ secrets.VM_USERNAME }}/brieftaube
-            
-            # The JAR file is already named app.jar from the build, no need to move it.
+            # Navigate into the newly copied deployment directory
+            cd /home/${{ secrets.VM_USERNAME }}/brieftaube/deployment
 
-            # Build new images and start the services
+            # Build and start services from within this directory
             docker compose down --volumes
             docker compose build --no-cache
             docker compose up -d
