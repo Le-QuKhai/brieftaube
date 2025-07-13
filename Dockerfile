@@ -1,22 +1,14 @@
-FROM gradle:8.10.2-jdk17 AS builder
-WORKDIR /app
-COPY . .
+# Use a lightweight Java 17 runtime environment
+FROM eclipse-temurin:17-jre-alpine
 
-#RUN gradle clean assemble --no-daemon -x test
-
-RUN gradle clean assemble --no-daemon
-
-RUN echo "--- Listing contents of /app/build/libs/ after assemble ---" \
-    && ls -l /app/build/libs/ || echo "/app/build/libs/ not found or empty"
-
-# Stage 2: Run the app using a lightweight JRE
-
-FROM eclipse-temurin:17-jre
-
+# Set the working directory inside the container
 WORKDIR /app
 
-COPY --from=builder /app/build/libs/*.jar ./
+# Copy the pre-built app.jar from the build context into the container
+COPY app.jar .
 
+# Expose the port the Spring Boot application runs on
 EXPOSE 8080
 
+# The command to run the application when the container starts
 ENTRYPOINT ["java", "-jar", "app.jar"]
