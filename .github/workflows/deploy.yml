@@ -53,6 +53,10 @@ jobs:
           target: "/home/${{ secrets.VM_USERNAME }}/"
           rm: true
 
+            # --- THIS IS THE FIX ---
+      - name: ⏸️ Wait for 15 seconds to avoid IP ban
+        run: sleep 15
+
       - name: 🚀 Deploy on Server
         uses: appleboy/ssh-action@v1.0.3
         with:
