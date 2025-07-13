@@ -13,7 +13,7 @@ jobs:
       - name: Checkout Repository and Submodules
         uses: actions/checkout@v4
         with:
-          submodules: 'recursive' # <-- THIS IS THE FIX. IT DOWNLOADS THE SUBMODULE CODE.
+          submodules: 'recursive'
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -32,8 +32,8 @@ jobs:
           cp Dockerfile deployment/
           cp Dockerfile.proxy deployment/
           cp brieftaube.conf deployment/
-          # This command will now succeed because the submodule was checked out
-          cp -r pigeonhole_frontend/* deployment/
+          # CORRECTED: Copy the entire directory, not its contents
+          cp -r pigeonhole_frontend deployment/
 
       - name: 🚚 Copy Deployment Package to Server
         uses: appleboy/scp-action@v0.1.7
