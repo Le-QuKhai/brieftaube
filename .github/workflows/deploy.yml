@@ -10,16 +10,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Main Repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
-
-      - name: Manually Clone Frontend Repository
-        run: |
-          # First, delete the empty directory created by the checkout
-          rm -rf pigeonhole_frontend
-          # Then, clone your public frontend repository into a new directory with the same name
-          git clone https://github.com/brieftaube-haw/pigeonhole_frontend.git
-        # ⬆️ REPLACE THE URL ABOVE with the correct HTTPS URL for your public frontend repository.
 
       - name: Set up JDK 17
         uses: actions/setup-java@v4
@@ -27,9 +19,10 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Build Backend Project with Gradle
+      - name: Build Project with Gradle
         run: ./gradlew build
 
+      # STEP 1: Create a self-contained deployment package
       - name: 📦 Prepare Deployment Package
         run: |
           mkdir -p deployment
@@ -37,9 +30,7 @@ jobs:
           cp docker-compose.yml deployment/
           cp Dockerfile deployment/
           cp Dockerfile.proxy deployment/
-          cp brieftaube.conf deployment/
-          cp -r pigeonhole_frontend deployment/
-
+      # STEP 2: Copy the SINGLE deployment folder
       - name: 🚚 Copy Deployment Package to Server
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -49,14 +40,11 @@ jobs:
           proxy_host: usershell.informatik.haw-hamburg.de
           proxy_username: infwax193
           proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: "deployment"
-          target: "/home/${{ secrets.VM_USERNAME }}/"
-          rm: true
+          source: "deployment" # Copy the single folder
+          target: "/home/${{ secrets.VM_USERNAME }}/brieftaube"
+          rm: true # Remove the target directory before copying for a clean slate
 
-            # --- THIS IS THE FIX ---
-      - name: ⏸️ Wait for 15 seconds to avoid IP ban
-        run: sleep 15
-
+      # STEP 3: Execute the deployment script on the server
       - name: 🚀 Deploy on Server
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -67,7 +55,9 @@ jobs:
           proxy_username: infwax193
           proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd /home/${{ secrets.VM_USERNAME }}/deployment
+            # Navigate into the newly copied deployment directory
+            cd /home/${{ secrets.VM_USERNAME }}/brieftaube/deployment
+            # Build and start services from within this directory
             docker compose down --volumes
             docker compose build --no-cache
             docker compose up -d
