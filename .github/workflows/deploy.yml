@@ -1,4 +1,4 @@
-name: Build and Deploy to VM
+name: SIMPLE TEST - Copy ONE File
 
 on:
   push:
@@ -6,23 +6,16 @@ on:
       - fVMproxy
 
 jobs:
-  build-and-deploy:
+  debug-copy-job:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Set up JDK 17
-        uses: actions/setup-java@v4
-        with:
-          java-version: '17'
-          distribution: 'temurin'
+      - name: 🕵️ List files in the root directory
+        run: ls -la
 
-      - name: Build Project with Gradle
-        run: ./gradlew build
-
-      - name: 🚚 Copy Files to Server
+      - name: 🚚 ATTEMPT TO COPY ONLY docker-compose.yml
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.VM_HOST }}
@@ -31,28 +24,5 @@ jobs:
           proxy_host: usershell.informatik.haw-hamburg.de
           proxy_username: infwax193
           proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
-          source: |
-            build/libs/app.jar
-            docker-compose.yml
-            Dockerfile.proxy
-          target: "/home/${{ secrets.VM_USERNAME }}/brieftaube"
-
-      - name: 🚀 Deploy on Server
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.VM_HOST }}
-          username: ${{ secrets.VM_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          proxy_host: usershell.informatik.haw-hamburg.de
-          proxy_username: infwax193
-          proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
-          script: |
-            # Navigate to the deployment directory
-            cd /home/${{ secrets.VM_USERNAME }}/brieftaube
-
-            # Build new images and start the services
-            docker compose down --volumes
-            docker compose build --no-cache
-            docker compose up -d
-
-            echo "✅ Deployment Finished."
+          source: "docker-compose.yml" # We are only trying to copy this one file.
+          target: "/home/${{ secrets.VM_USERNAME }}/brieftaube_test"
