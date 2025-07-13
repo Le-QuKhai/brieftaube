@@ -65,7 +65,7 @@ jobs:
           proxy_key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /home/${{ secrets.VM_USERNAME }}/brieftaube/deployment
-            docker compose down --volumes
+            docker compose down 
             docker compose build --no-cache
             docker compose up -d
             echo "✅ Deployment Finished."
