@@ -3,21 +3,17 @@ name: Build, Package, and Deploy to VM
 on:
   push:
     branches:
-      - fVMproxy
+      - main
 
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Main Repository
+      - name: Checkout repository with submodules
         uses: actions/checkout@v4
-
-      - name: Manually Clone Frontend Repository
-        run: |
-          # We explicitly clone the public frontend repository.
-          # This bypasses any broken submodule links.
-          git clone https://github.com/brieftaube-haw/pigeonhole_frontend.git pigeonhole_frontend
+        with:
+          submodules: recursive
 
       - name: Verify Frontend Files Exist
         run: ls -laR pigeonhole_frontend
