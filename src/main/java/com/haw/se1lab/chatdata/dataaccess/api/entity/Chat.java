@@ -20,7 +20,6 @@ import java.util.*;
 @Entity
 public class Chat extends AbstractEntity
 {
-
     @ElementCollection
     private List<Nachricht> nachrichten;
     @ManyToMany(fetch = FetchType.LAZY)
