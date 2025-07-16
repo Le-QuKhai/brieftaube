@@ -18,6 +18,15 @@ jobs:
         with:
           submodules: recursive
 
+      - name: Pull latest changes in submodule (master)
+        run: |
+          git submodule update --init --recursive
+          cd pigeonhole_frontend
+          git remote https://github.com/brieftaube-haw/pigeonhole_frontend.git
+          git fetch origin
+          git checkout master
+          git pull origin master
+
       - name: Verify Frontend Files Exist
         run: ls -laR pigeonhole_frontend
 
