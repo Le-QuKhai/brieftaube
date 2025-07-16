@@ -22,7 +22,7 @@ jobs:
         run: |
           git submodule update --init --recursive
           cd pigeonhole_frontend
-          git remote set-url https://github.com/brieftaube-haw/pigeonhole_frontend.git
+          git remote set-url origin https://github.com/brieftaube-haw/pigeonhole_frontend.git
           git fetch origin
           git checkout master
           git pull origin master
