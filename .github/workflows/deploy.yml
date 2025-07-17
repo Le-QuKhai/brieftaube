@@ -39,6 +39,9 @@ jobs:
       - name: Build Backend Project with Gradle
         run: ./gradlew build
 
+      - name: Test Backend Project with JUnit Tests
+        run: ./gradlew test
+
       - name: Prepare Deployment Package
         run: |
           mkdir -p deployment
